@@ -4,7 +4,7 @@
 
 ## NuGet
 
-todo
+https://www.nuget.org/packages/bertt.triangulator/
 
 ## Sample code
 
