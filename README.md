@@ -17,7 +17,8 @@ Assert.IsTrue(triangulatedGeometry.Geometries.Count == 22);
 
 ## Remarks
 
-- Input wkb must be of type PolyhedralSurface, otherwise an error will occur.
+- Input wkb must be of type PolyhedralSurface, otherwise an error will occur;
+- Geometries with holes are not supported (yet).
 
 ## Method 
 
