@@ -13,6 +13,8 @@
     <PackageTags>wkb triangulate polyhedralsurface</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Bert Temme</Copyright>
+    <Version>1.0.1</Version>
+    <PackageReleaseNotes>return wkb instead of PolyhedralSurface</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

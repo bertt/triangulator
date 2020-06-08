@@ -40,7 +40,7 @@ namespace triangulator.tests
             var scene = new SharpGLTF.Scenes.SceneBuilder();
             scene.AddRigidMesh(mesh, Matrix4x4.Identity);
             var model = scene.ToGltf2();
-            model.SaveGLTF(@"d:\aaa\building10.gtlf");
+            model.SaveGLTF(@"building.gtlf");
         }
     }
 }
