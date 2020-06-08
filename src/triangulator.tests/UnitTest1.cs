@@ -3,6 +3,7 @@ using SharpGLTF.Geometry;
 using SharpGLTF.Materials;
 using System.IO;
 using System.Numerics;
+using Wkx;
 using VERTEX = SharpGLTF.Geometry.VertexTypes.VertexPosition;
 
 namespace triangulator.tests
@@ -13,8 +14,9 @@ namespace triangulator.tests
         public void TriangulatePolyhedralTest()
         {
             var buildingWkb = File.ReadAllBytes(@"testdata/building.wkb");
-            var allTriangles = Triangulator.Triangulate(buildingWkb);
-            Assert.IsTrue(allTriangles.Count == 22);
+            var wkbTriangulated = Triangulator.Triangulate(buildingWkb);
+            var triangulatedGeometry = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkbTriangulated);
+            Assert.IsTrue(triangulatedGeometry.Geometries.Count == 22);
 
             // convert to glTF to be able to inspect the result...
             var material1 = new MaterialBuilder()
@@ -26,8 +28,9 @@ namespace triangulator.tests
             var mesh = new MeshBuilder<VERTEX>("mesh");
 
             var prim = mesh.UsePrimitive(material1);
-            foreach(var t in allTriangles)
+            foreach(var t in triangulatedGeometry.Geometries)
             {
+                Assert.IsTrue(t.Dimension == Dimension.Xyz);
                 prim.AddTriangle(
                     new VERTEX((float)t.ExteriorRing.Points[0].X, (float)t.ExteriorRing.Points[0].Y, (float)t.ExteriorRing.Points[0].Z), 
                     new VERTEX((float)t.ExteriorRing.Points[1].X, (float)t.ExteriorRing.Points[1].Y, (float)t.ExteriorRing.Points[1].Z), 
@@ -37,7 +40,7 @@ namespace triangulator.tests
             var scene = new SharpGLTF.Scenes.SceneBuilder();
             scene.AddRigidMesh(mesh, Matrix4x4.Identity);
             var model = scene.ToGltf2();
-            model.SaveGLTF(@"building1.gtlf");
+            model.SaveGLTF(@"d:\aaa\building10.gtlf");
         }
     }
 }

@@ -10,8 +10,9 @@ https://www.nuget.org/packages/bertt.triangulator/
 
 ```
 var buildingWkb = File.ReadAllBytes(@"testdata/building.wkb");
-var allTriangles = Triangulator.Triangulate(buildingWkb);
-Assert.IsTrue(allTriangles.Count == 22);
+var wkbTriangulated = Triangulator.Triangulate(buildingWkb);
+var triangulatedGeometry = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkbTriangulated);
+Assert.IsTrue(triangulatedGeometry.Geometries.Count == 22);
 ```
 
 ## Remarks

@@ -1,6 +1,7 @@
 ﻿using EarcutNet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using Wkx;
 
@@ -8,18 +9,21 @@ namespace triangulator
 {
     public static class Triangulator
     {
-        public static List<Polygon> Triangulate(byte[] wkb)
+        public static byte[] Triangulate(byte[] wkb)
         {
             var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkb);
 
-            var allTriangles = new List<Polygon>();
+            var result = new PolyhedralSurface();
+            result.Dimension = Dimension.Xyz;
             foreach (var g in polyhedral.Geometries)
             {
                 var triangles = Triangulate(g);
-                allTriangles.AddRange(triangles);
+                result.Geometries.AddRange(triangles);
             }
 
-            return allTriangles;
+            var stream = new MemoryStream();
+            result.Serialize<WkbSerializer>(stream);
+            return stream.ToArray();
         }
 
         private static List<Polygon> Triangulate(Polygon inputpolygon)
@@ -79,6 +83,7 @@ namespace triangulator
                     t = res;
                 }
 
+                t.Dimension = Dimension.Xyz;
                 polygons.Add(t);
             }
             return polygons;
