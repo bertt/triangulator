@@ -15,6 +15,7 @@
     <Copyright>Bert Temme</Copyright>
     <Version>1.0.1</Version>
     <PackageReleaseNotes>return wkb instead of PolyhedralSurface</PackageReleaseNotes>
+    <RootNamespace>Triangulator</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using Wkx;
 using System.Numerics;
 
-namespace triangulator
+namespace Triangulator
 {
     public static class PointExtensions
     {

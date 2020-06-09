@@ -56,5 +56,3 @@ for visual inspections.
 ## Dependencies
 
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
-
-
