@@ -6,7 +6,7 @@ using System.Numerics;
 using Wkx;
 using VERTEX = SharpGLTF.Geometry.VertexTypes.VertexPosition;
 
-namespace Triangulator.Tests
+namespace Triangulate.Tests
 {
     public class Tests
     {

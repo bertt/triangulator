@@ -5,7 +5,7 @@ using System.IO;
 using System.Numerics;
 using Wkx;
 
-namespace Triangulator
+namespace Triangulate
 {
     public static class Triangulator
     {
