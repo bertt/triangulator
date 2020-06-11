@@ -2,12 +2,12 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Triangulate.Tests
 {
     public class CityJsonTests
     {
-
         [Test]
         public void FirstCityJsonParsingTest()
         {
@@ -20,6 +20,17 @@ namespace Triangulate.Tests
             Assert.IsTrue(res.version == "1.0");
             Assert.IsTrue(res.vertices.Length== 255);
             Assert.IsTrue(res.CityObjects.Count == 2);
+            var firstBuilding = res.CityObjects.First();
+            var building = firstBuilding.Value;
+            Assert.IsTrue(building.type == "Building");
+            Assert.IsTrue(building.geometry.Length == 1);
+            Assert.IsTrue(building.geometry.First().type == "MultiSurface");
+            Assert.IsTrue(building.geometry.First().boundaries.Length == 110);
+            Assert.IsTrue(building.geometry.First().boundaries[0].Length == 1);
+            Assert.IsTrue(building.geometry.First().boundaries[0][0].Length == 3);
+            Assert.IsTrue(building.geometry.First().boundaries[0][0][0] == 198);
+            Assert.IsTrue(building.geometry.First().boundaries[0][0][1] == 199);
+            Assert.IsTrue(building.geometry.First().boundaries[0][0][2] == 200);
         }
     }
 
