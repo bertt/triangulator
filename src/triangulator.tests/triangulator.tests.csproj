@@ -23,14 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="testdata\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="testdata\building.wkb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="testdata\LoD2_280_5657_1_NW.gml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="testdata\twobuildings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

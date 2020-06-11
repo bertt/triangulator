@@ -11,7 +11,7 @@ namespace Triangulate.Tests
         {
             var buildingWkb = File.ReadAllBytes(@"testdata/building.wkb");
             var wkbTriangulated = Triangulator.Triangulate(buildingWkb);
-            var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkbTriangulated);
+            var polyhedral = (PolyhedralSurface)Wkx.Geometry.Deserialize<WkbSerializer>(wkbTriangulated);
             Assert.IsTrue(polyhedral.Geometries.Count == 22);
 
             GltfCreator.CreateGltf(polyhedral, @"wkb.gltf");

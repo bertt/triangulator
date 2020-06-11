@@ -23,7 +23,6 @@ namespace Triangulate.Tests
 
             // take first geometry
             var featureGml = buildingLayer.GetNextFeature();
-            // featureGml = buildingLayer.GetNextFeature();
 
             var geometry = featureGml.GetGeometryRef();
             var wkt = string.Empty;
@@ -38,7 +37,9 @@ namespace Triangulate.Tests
             var triangulatedPolyhedral = Triangulator.Triangulate(polyhedral);
 
             // todo: improve results...
-
+            // turns out the mulitlinestrings are not the solids...
+            // so the following gltf is a mess
+            // needs something different for parsing gml
             GltfCreator.CreateGltf(triangulatedPolyhedral, @"gml.gltf");
         }
 
