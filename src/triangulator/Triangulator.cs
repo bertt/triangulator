@@ -9,10 +9,8 @@ namespace Triangulate
 {
     public static class Triangulator
     {
-        public static byte[] Triangulate(byte[] wkb)
+        public static PolyhedralSurface Triangulate(PolyhedralSurface polyhedral)
         {
-            var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkb);
-
             var result = new PolyhedralSurface
             {
                 Dimension = Dimension.Xyz
@@ -23,12 +21,19 @@ namespace Triangulate
                 result.Geometries.AddRange(triangles);
             }
 
+            return result;
+        }
+
+        public static byte[] Triangulate(byte[] wkb)
+        {
+            var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkb);
+            var triangulatedPolyhedral = Triangulate(polyhedral);
             var stream = new MemoryStream();
-            result.Serialize<WkbSerializer>(stream);
+            triangulatedPolyhedral.Serialize<WkbSerializer>(stream);
             return stream.ToArray();
         }
 
-        private static List<Polygon> Triangulate(Polygon inputpolygon)
+        public static List<Polygon> Triangulate(Polygon inputpolygon)
         {
             var normal = inputpolygon.GetNormal();
             var polygonflat = Flatten(inputpolygon, normal);
