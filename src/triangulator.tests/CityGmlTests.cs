@@ -7,7 +7,7 @@ namespace Triangulate.Tests
 {
     public class CityGmlTests
     {
-        [Test]
+        //[Test]
         public void FirstTestCityGml()
         {
             Ogr.RegisterAll();
