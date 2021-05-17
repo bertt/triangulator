@@ -25,8 +25,7 @@ namespace Triangulate.Tests
             var featureGml = buildingLayer.GetNextFeature();
 
             var geometry = featureGml.GetGeometryRef();
-            var wkt = string.Empty;
-            geometry.ExportToWkt(out wkt);
+            geometry.ExportToWkt(out string wkt);
             Assert.IsTrue(wkt.Contains("MULTILINESTRING"));
             var multilinestring = (MultiLineString)Wkx.Geometry.Deserialize<WktSerializer>(wkt);
 

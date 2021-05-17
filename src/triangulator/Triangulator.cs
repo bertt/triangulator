@@ -1,7 +1,6 @@
 ﻿using EarcutNet;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using Wkx;
 
@@ -28,9 +27,7 @@ namespace Triangulate
         {
             var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkb);
             var triangulatedPolyhedral = Triangulate(polyhedral);
-            var stream = new MemoryStream();
-            triangulatedPolyhedral.Serialize<WkbSerializer>(stream);
-            return stream.ToArray();
+            return triangulatedPolyhedral.AsBinary();
         }
 
         public static List<Polygon> Triangulate(Polygon inputpolygon)

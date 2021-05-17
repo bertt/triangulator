@@ -1,9 +1,26 @@
-﻿using Wkx;
+﻿using System.IO;
+using System.Text;
+using Wkx;
 
 namespace Triangulate
 {
     public static class GeometryExtensions
     {
+        public static string AsText(this Geometry geometry)
+        {
+            var stream = new MemoryStream();
+            geometry.Serialize<WktSerializer>(stream);
+            var wkt = Encoding.UTF8.GetString(stream.ToArray());
+            return wkt;
+        }
+
+        public static byte[] AsBinary(this Geometry geometry)
+        {
+            var stream = new MemoryStream();
+            geometry.Serialize<WkbSerializer>(stream);
+            return stream.ToArray();
+        }
+
         public static PolyhedralSurface ToPolyhedralSurface(this MultiPolygon multipolygon)
         {
             var polyhedralsurface = new PolyhedralSurface
@@ -43,7 +60,7 @@ namespace Triangulate
             };
 
             polygon.ExteriorRing.Points.AddRange(linestring.Points);
-            polygon.ExteriorRing.Points.Add(linestring.Points[linestring.Points.Count - 1]);
+            polygon.ExteriorRing.Points.Add(linestring.Points[^1]);
 
             return polygon;
         }
