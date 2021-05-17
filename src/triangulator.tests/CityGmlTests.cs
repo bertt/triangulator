@@ -1,13 +1,12 @@
 ﻿using NUnit.Framework;
 using OSGeo.OGR;
-using System;
 using Wkx;
 
 namespace Triangulate.Tests
 {
     public class CityGmlTests
     {
-        //[Test]
+        [Test]
         // disabled this test because there are issues with OSGeo.OGR dependency on buildserver
         public void FirstTestCityGml()
         {
@@ -33,7 +32,7 @@ namespace Triangulate.Tests
 
             Assert.IsTrue(multilinestring.Geometries.Count == 5);
 
-            var polyhedral= GetPolyhedral(multilinestring);
+            var polyhedral= multilinestring.ToPolyhedralSurface();
 
             var triangulatedPolyhedral = Triangulator.Triangulate(polyhedral);
 
@@ -42,35 +41,6 @@ namespace Triangulate.Tests
             // so the following gltf is a mess
             // needs something different for parsing gml
             GltfCreator.CreateGltf(triangulatedPolyhedral, @"gml.gltf");
-        }
-
-        private PolyhedralSurface GetPolyhedral(MultiLineString multilinestring) 
-        { 
-            var polyhedralsurface = new PolyhedralSurface
-            {
-                Dimension = Dimension.Xyz
-            };
-
-            foreach(var linestring in multilinestring.Geometries)
-            {
-                var polygon = GetPolygon(linestring);
-                polyhedralsurface.Geometries.Add(polygon);
-            }
-
-            return polyhedralsurface;
-        }
-
-        private Polygon GetPolygon(LineString linestring)
-        {
-            var polygon = new Polygon()
-            {
-                Dimension = Dimension.Xyz
-            };
-
-            polygon.ExteriorRing.Points.AddRange(linestring.Points);
-            polygon.ExteriorRing.Points.Add(linestring.Points[linestring.Points.Count-1]);
-
-            return polygon;
         }
     }
 }

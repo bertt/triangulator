@@ -24,7 +24,6 @@ namespace Triangulate.Tests
             var prim = mesh.UsePrimitive(material1);
             foreach (var t in triangulatedGeometry.Geometries)
             {
-                Assert.IsTrue(t.Dimension == Dimension.Xyz);
                 prim.AddTriangle(
                     new VERTEX((float)t.ExteriorRing.Points[0].X, (float)t.ExteriorRing.Points[0].Y, (float)t.ExteriorRing.Points[0].Z),
                     new VERTEX((float)t.ExteriorRing.Points[1].X, (float)t.ExteriorRing.Points[1].Y, (float)t.ExteriorRing.Points[1].Z),
@@ -36,6 +35,5 @@ namespace Triangulate.Tests
             var model = scene.ToGltf2();
             model.SaveGLTF(outputfile);
         }
-
     }
 }
