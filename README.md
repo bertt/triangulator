@@ -1,6 +1,6 @@
 # Triangulator
 
-.NET Standard 2.1 library for triangulating 3D PolyhedralSurface WKB geometries
+.NET 6 library for triangulating 3D PolyhedralSurface WKB geometries
 
 ## NuGet
 
@@ -56,3 +56,14 @@ for visual inspections.
 ## Dependencies
 
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
+
+## History
+
+2020-09-01: release 1.1: to NET 6
+2020-06-10: release 1.0.3
+2020-06-09: release 1.0.2
+2020-06-08: release 1.0.1
+2020-06-07: release 1.0.0
+
+
+
