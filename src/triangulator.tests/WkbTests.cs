@@ -19,5 +19,17 @@ namespace Triangulate.Tests
 
             GltfCreator.CreateGltf(polyhedral, @"wkb.gltf");
         }
+
+
+        [Test]
+        public void TraingulateCubeTest()
+        {
+            var cubeWkt = "POLYHEDRALSURFACE Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 1 0, 0 1 1, 0 0 1, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 1, 1 0 1, 0 0 1, 0 1 1, 1 1 1)),((1 1 1, 1 0 1, 1 0 0, 1 1 0, 1 1 1)),((1 1 1, 1 1 0, 0 1 0, 0 1 1, 1 1 1)))";
+            var expectedResult = "POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)),((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,0 0 1,0 0 0,0 1 1)),((0 0 0,0 1 0,0 1 1,0 0 0)),((1 0 1,0 0 1,0 0 0,1 0 1)),((0 0 0,1 0 0,1 0 1,0 0 0)),((1 1 1,1 0 1,0 1 1,1 1 1)),((0 0 1,0 1 1,1 0 1,0 0 1)),((1 0 0,1 1 0,1 1 1,1 0 0)),((1 1 1,1 0 1,1 0 0,1 1 1)),((1 1 1,1 1 0,0 1 1,1 1 1)),((0 1 0,0 1 1,1 1 0,0 1 0)))";
+            var polyhedralsurface = (PolyhedralSurface)Wkx.Geometry.Deserialize<WktSerializer>(cubeWkt);
+            var wkbTriangulated = Triangulator.Triangulate(polyhedralsurface);
+            var polyhedralsurface_after_wkt = wkbTriangulated.AsText();
+            Assert.IsTrue(expectedResult == polyhedralsurface_after_wkt);
+        }
     }
 }

@@ -15,6 +15,20 @@ var triangulatedGeometry = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer
 Assert.IsTrue(triangulatedGeometry.Geometries.Count == 22);
 ```
 
+## Sample result triangulating polyhedralsurface:
+
+From: 
+
+```
+POLYHEDRALSURFACE Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 1 0, 0 1 1, 0 0 1, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 1, 1 0 1, 0 0 1, 0 1 1, 1 1 1)),((1 1 1, 1 0 1, 1 0 0, 1 1 0, 1 1 1)),((1 1 1, 1 1 0, 0 1 0, 0 1 1, 1 1 1)))
+```
+
+To:
+
+```
+POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)),((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,0 0 1,0 0 0,0 1 1)),((0 0 0,0 1 0,0 1 1,0 0 0)),((1 0 1,0 0 1,0 0 0,1 0 1)),((0 0 0,1 0 0,1 0 1,0 0 0)),((1 1 1,1 0 1,0 1 1,1 1 1)),((0 0 1,0 1 1,1 0 1,0 0 1)),((1 0 0,1 1 0,1 1 1,1 0 0)),((1 1 1,1 0 1,1 0 0,1 1 1)),((1 1 1,1 1 0,0 1 1,1 1 1)),((0 1 0,0 1 1,1 1 0,0 1 0)))
+```
+
 ## Remarks
 
 - Input wkb must be of type PolyhedralSurface, otherwise an error will occur;
