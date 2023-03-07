@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using SharpGLTF.Geometry;
+﻿using SharpGLTF.Geometry;
 using SharpGLTF.Materials;
 using System.Numerics;
 using Wkx;
@@ -24,10 +23,14 @@ namespace Triangulate.Tests
             var prim = mesh.UsePrimitive(material1);
             foreach (var t in triangulatedGeometry.Geometries)
             {
+                var z0 = t.ExteriorRing.Points[0].Z??0;
+                var z1 = t.ExteriorRing.Points[1].Z ?? 0;
+                var z2 = t.ExteriorRing.Points[2].Z ?? 0;
+
                 prim.AddTriangle(
-                    new VERTEX((float)t.ExteriorRing.Points[0].X, (float)t.ExteriorRing.Points[0].Y, (float)t.ExteriorRing.Points[0].Z),
-                    new VERTEX((float)t.ExteriorRing.Points[1].X, (float)t.ExteriorRing.Points[1].Y, (float)t.ExteriorRing.Points[1].Z),
-                    new VERTEX((float)t.ExteriorRing.Points[2].X, (float)t.ExteriorRing.Points[2].Y, (float)t.ExteriorRing.Points[2].Z));
+                    new VERTEX((float)t.ExteriorRing.Points[0].X, (float)t.ExteriorRing.Points[0].Y, (float)z0),
+                    new VERTEX((float)t.ExteriorRing.Points[1].X, (float)t.ExteriorRing.Points[1].Y, (float)z1),
+                    new VERTEX((float)t.ExteriorRing.Points[2].X, (float)t.ExteriorRing.Points[2].Y, (float)z2));
             }
 
             var scene = new SharpGLTF.Scenes.SceneBuilder();

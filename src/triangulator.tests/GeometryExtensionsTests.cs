@@ -23,7 +23,8 @@ namespace Triangulate.Tests
             var polyhedralsurface = multipolygon.ToPolyhedralSurface();
             Assert.IsTrue(polyhedralsurface != null);
             Assert.IsTrue(polyhedralsurface.Geometries.Count == multipolygon.Geometries.Count);
-            Assert.IsTrue(Triangulator.Triangulate(polyhedralsurface).Geometries.Count == polyhedralsurface.Geometries.Count);
+            var triangles = Triangulator.Triangulate(polyhedralsurface);
+            Assert.IsTrue(triangles.Geometries.Count == 20);
         }
 
         [Test]

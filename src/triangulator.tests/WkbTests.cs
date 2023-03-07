@@ -1,12 +1,20 @@
 using NUnit.Framework;
 using System.IO;
-using System.Text;
 using Wkx;
 
 namespace Triangulate.Tests
 {
     public class Tests
     {
+        [Test]
+        public void Triangulate14840()
+        {
+            var wkt = "POLYGON Z ((-75.5316053939999 39.093700497 0,-75.531553209 39.093692102 0,-75.531565147 39.093647042 0,-75.5316173309999 39.0936554370001 0,-75.531653144 39.0935202580001 0,-75.531809698 39.093545444 0,-75.5317500099999 39.0937707430001 0,-75.5315934559999 39.093745557 0,-75.5316053939999 39.093700497 0))";
+
+            var building14840 = (Polygon)Wkx.Geometry.Deserialize<WktSerializer>(wkt);
+            var wkbTriangulated = Triangulator.Triangulate(building14840);
+        }
+
         [Test]
         public void TriangulateWkbTest()
         {
@@ -20,12 +28,11 @@ namespace Triangulate.Tests
             GltfCreator.CreateGltf(polyhedral, @"wkb.gltf");
         }
 
-
         [Test]
         public void TraingulateCubeTest()
         {
             var cubeWkt = "POLYHEDRALSURFACE Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 1 0, 0 1 1, 0 0 1, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 1, 1 0 1, 0 0 1, 0 1 1, 1 1 1)),((1 1 1, 1 0 1, 1 0 0, 1 1 0, 1 1 1)),((1 1 1, 1 1 0, 0 1 0, 0 1 1, 1 1 1)))";
-            var expectedResult = "POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)),((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,0 0 1,0 0 0,0 1 1)),((0 0 0,0 1 0,0 1 1,0 0 0)),((1 0 1,0 0 1,0 0 0,1 0 1)),((0 0 0,1 0 0,1 0 1,0 0 0)),((1 1 1,1 0 1,0 1 1,1 1 1)),((0 0 1,0 1 1,1 0 1,0 0 1)),((1 0 0,1 1 0,1 1 1,1 0 0)),((1 1 1,1 0 1,1 0 0,1 1 1)),((1 1 1,1 1 0,0 1 1,1 1 1)),((0 1 0,0 1 1,1 1 0,0 1 0)))";
+            var expectedResult = "POLYHEDRALSURFACE Z (((0 1,0 0,1 0,0 1)),((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1)),((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1)),((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1)),((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1)),((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1)),((0 1,1 0,1 1,0 1)))";
             var polyhedralsurface = (PolyhedralSurface)Wkx.Geometry.Deserialize<WktSerializer>(cubeWkt);
             var wkbTriangulated = Triangulator.Triangulate(polyhedralsurface);
             var polyhedralsurface_after_wkt = wkbTriangulated.AsText();

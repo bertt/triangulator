@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NetTopologySuite" Version="2.5.0" />
     <PackageReference Include="Wkx" Version="0.5.1" />
   </ItemGroup>
 

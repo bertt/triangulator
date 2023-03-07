@@ -34,6 +34,22 @@ namespace Triangulate
         {
             var normal = inputpolygon.GetNormal();
             var polygonflat = Flatten(inputpolygon, normal);
+            var wkt = polygonflat.SerializeString<WktSerializer>();
+            var wkts = NtsTesselate.Tesselate(wkt);
+
+            var polygons = new List<Polygon>();
+            foreach(var w in wkts)
+            {
+                polygons.Add((Polygon)Geometry.Deserialize<WktSerializer>(w));
+            }
+            return polygons;
+        }
+
+
+        public static List<Polygon> Triangulate2(Polygon inputpolygon)
+        {
+            var normal = inputpolygon.GetNormal();
+            var polygonflat = Flatten(inputpolygon, normal);
             var trianglesIndices = Tesselate(polygonflat);
 
             var polygons = new List<Polygon>();

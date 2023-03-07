@@ -14,7 +14,6 @@ namespace Triangulate.Tests
             var triangulatedPolyhedral = Triangulator.Triangulate(polyhedral);
             var s = triangulatedPolyhedral.GetBoundingBox();
             Assert.IsTrue(triangulatedPolyhedral.Geometries.Count == 86);
-
             GltfCreator.CreateGltf(triangulatedPolyhedral, @"d:\aaa\multipolygonz.gltf");
         }
     }
