@@ -8,24 +8,26 @@ namespace Triangulate
 {
     public static class Triangulator
     {
-        public static byte[] Triangulate(byte[] wkb)
+        public static Geometry Triangulate(Geometry geom)
         {
-            var geom = Geometry.Deserialize<WkbSerializer>(wkb);
-
             if (geom is PolyhedralSurface polyhedral)
             {
-                var triangulatedPolygon = Triangulate(polyhedral);
-                return triangulatedPolygon.AsBinary();
+                return Triangulate(polyhedral);
             }
             else if (geom is MultiPolygon multiPolygon)
             {
-                var triangulatedPolygon = Triangulate(multiPolygon);
-                return triangulatedPolygon.AsBinary();
+                return Triangulate(multiPolygon);
             }
             else
             {
                 throw new NotSupportedException($"Geometry type {geom.GeometryType} is not supported");
             }
+        }       
+        public static byte[] Triangulate(byte[] wkb)
+        {
+            var geom = Geometry.Deserialize<WkbSerializer>(wkb);
+            var result = Triangulate(geom);
+            return result.AsBinary();
         }
 
         private static MultiPolygon Triangulate(MultiPolygon multipolygon)
