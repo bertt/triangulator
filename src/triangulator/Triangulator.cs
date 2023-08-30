@@ -8,29 +8,62 @@ namespace Triangulate
 {
     public static class Triangulator
     {
-        public static PolyhedralSurface Triangulate(PolyhedralSurface polyhedral)
+        public static byte[] Triangulate(byte[] wkb)
+        {
+            var geom = Geometry.Deserialize<WkbSerializer>(wkb);
+
+            if (geom is PolyhedralSurface polyhedral)
+            {
+                var triangulatedPolygon = Triangulate(polyhedral);
+                return triangulatedPolygon.AsBinary();
+            }
+            else if (geom is MultiPolygon multiPolygon)
+            {
+                var triangulatedPolygon = Triangulate(multiPolygon);
+                return triangulatedPolygon.AsBinary();
+            }
+            else
+            {
+                throw new NotSupportedException($"Geometry type {geom.GeometryType} is not supported");
+            }
+        }
+
+        private static MultiPolygon Triangulate(MultiPolygon multipolygon)
+        {
+            var result = new MultiPolygon
+            {
+                Dimension = Dimension.Xyz
+            };
+
+            result.Geometries.AddRange(GetTriangles(multipolygon.Geometries));
+            return result;
+        }
+
+        private static PolyhedralSurface Triangulate(PolyhedralSurface polyhedral)
         {
             var result = new PolyhedralSurface
             {
                 Dimension = Dimension.Xyz
             };
-            foreach (var g in polyhedral.Geometries)
-            {
-                var triangles = Triangulate(g);
-                result.Geometries.AddRange(triangles);
-            }
+
+            result.Geometries.AddRange(GetTriangles(polyhedral.Geometries));
 
             return result;
         }
 
-        public static byte[] Triangulate(byte[] wkb)
+
+        private static List<Polygon> GetTriangles(List<Polygon> geometries)
         {
-            var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkb);
-            var triangulatedPolyhedral = Triangulate(polyhedral);
-            return triangulatedPolyhedral.AsBinary();
+            var result = new List<Polygon>();
+            foreach (var g in geometries)
+            {
+                var triangles = Triangulate(g);
+                result.AddRange(triangles);
+            }
+            return result;
         }
 
-        public static List<Polygon> Triangulate(Polygon inputpolygon)
+        private static List<Polygon> Triangulate(Polygon inputpolygon)
         {
             var normal = inputpolygon.GetNormal();
             var polygonflat = Flatten(inputpolygon, normal);

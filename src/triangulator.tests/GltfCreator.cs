@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using SharpGLTF.Geometry;
+﻿using SharpGLTF.Geometry;
 using SharpGLTF.Materials;
 using System.Numerics;
 using Wkx;

@@ -1,6 +1,6 @@
 # Triangulator
 
-.NET 6 library for triangulating 3D PolyhedralSurface WKB geometries
+.NET 6 library for triangulating 3D WKB geometries (PolyhedralSurface/MultiPolygon) using Earcut algorithm
 
 ## NuGet
 
@@ -31,8 +31,8 @@ POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)),((1 1 0,1 0 0,0 1 0,1 1 0)),((0
 
 ## Remarks
 
-- Input wkb must be of type PolyhedralSurface, otherwise an error will occur;
-- Triangulated geometry is returned as WKB (also PolyhedralSurface);
+- Input wkb must be of type PolyhedralSurface/MultiPolygon, otherwise an error will occur;
+- Triangulated geometry is returned as WKB (as PolyhedralSurface/MultiPolygon);
 - Geometries with holes are not supported (yet).
 
 ## Method 
@@ -73,11 +73,17 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2023-08-30: release 1.2: add support for MultiPolygon
+
 2020-09-01: release 1.1: to NET 6
+
 2020-06-10: release 1.0.3
+
 2020-06-09: release 1.0.2
+
 2020-06-08: release 1.0.1
-2020-06-07: release 1.0.0
+
+2020-06-07: release 1.0.0 Initial release
 
 
 

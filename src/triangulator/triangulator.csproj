@@ -6,18 +6,18 @@
     <PackageId>bertt.triangulator</PackageId>
     <Authors>Bert Temme</Authors>
     <Product>Triangulator</Product>
-    <Description>Triangulates 3D polyhedralsurface</Description>
+    <Description>Triangulates 3D geometries</Description>
     <PackageProjectUrl>https://github.com/bertt/triangulator</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bertt/triangulator</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>wkb triangulate polyhedralsurface</PackageTags>
+    <PackageTags>wkb triangulate earcut</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Bert Temme</Copyright>
-    <Version>1.1</Version>
-    <PackageReleaseNotes>return wkb instead of PolyhedralSurface</PackageReleaseNotes>
+    <Version>1.2</Version>
+    <PackageReleaseNotes>Add support for MultiPolygon</PackageReleaseNotes>
     <RootNamespace>Triangulate</RootNamespace>
-    <AssemblyVersion>1.1</AssemblyVersion>
-    <FileVersion>1.1</FileVersion>
+    <AssemblyVersion>1.2</AssemblyVersion>
+    <FileVersion>1.2</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
