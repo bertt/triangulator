@@ -73,6 +73,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2023-09-22: release 1.2.2: fix normals calculation
+
 2023-08-30: release 1.2.1: add support for Geometry type as input (in addition of WKB)
 
 2023-08-30: release 1.2: add support for MultiPolygon
