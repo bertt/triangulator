@@ -124,7 +124,8 @@ namespace Triangulate
 
             // check crossproduct again...
             var normalTriangles = t.GetNormal();
-            var mustInvert = Vector3.Dot(normal, normalTriangles) < 0;
+            var dot = Vector3.Dot(normal, normalTriangles);
+            var mustInvert =  dot < 0;
 
             if (mustInvert)
             {

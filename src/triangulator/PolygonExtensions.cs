@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using Wkx;
 
 namespace Triangulate
@@ -10,6 +11,11 @@ namespace Triangulate
             var vect1 = polygon.ExteriorRing.Points[1].ToVector3() - polygon.ExteriorRing.Points[0].ToVector3();
             var vect2 = polygon.ExteriorRing.Points[polygon.ExteriorRing.Points.Count - 2].ToVector3() - polygon.ExteriorRing.Points[0].ToVector3();
             var vectProd = Vector3.Cross(vect1, vect2);
+            float epsilon = 0.000001f;
+            if (vectProd.Length() < epsilon)
+            {
+                return new Vector3(0, 0, 0);
+            }
             return vectProd;
         }
     }
