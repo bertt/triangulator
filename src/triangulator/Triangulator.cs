@@ -1,8 +1,8 @@
-﻿using EarcutNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Wkx;
+using SharpGeometry.Triangulation;
 
 namespace Triangulate
 {
@@ -67,106 +67,33 @@ namespace Triangulate
 
         private static List<Polygon> Triangulate(Polygon inputpolygon)
         {
-            var normal = inputpolygon.GetNormal();
-            var polygonflat = Flatten(inputpolygon, normal);
-            var trianglesIndices = Tesselate(polygonflat);
+            var points = inputpolygon.ExteriorRing.Points;
+            points.RemoveAt(points.Count - 1);
+            var v3 = new List<Vector3>();
+            foreach(var point in points)
+            {
+                v3.Add(point.ToVector3());
+            }
+            
+            var triangles = PolygonTriangulator.Default.Triangulate(v3);
 
             var polygons = new List<Polygon>();
-            for (var i = 0; i < trianglesIndices.Count / 3; i++)
+            foreach(var t in triangles)
             {
-                var poly = GetPolygon(inputpolygon, normal, trianglesIndices, i);
-                polygons.Add(poly);
+                var polygon = new Polygon();
+                var point0 = new Point(t.PositionA.X, t.PositionA.Y, t.PositionA.Z);
+                var point1 = new Point(t.PositionB.X, t.PositionB.Y, t.PositionB.Z);
+                var point2 = new Point(t.PositionC.X, t.PositionC.Y, t.PositionC.Z);
+
+                polygon.ExteriorRing.Points.Add(point0);
+                polygon.ExteriorRing.Points.Add(point1);
+                polygon.ExteriorRing.Points.Add(point2);
+                polygon.ExteriorRing.Points.Add(point0);
+                polygon.Dimension = Dimension.Xyz;
+
+                polygons.Add(polygon);
             }
             return polygons;
-        }
-
-        private static Polygon Flatten(Polygon inputpolygon, Vector3 normal)
-        {
-            var polygonflat = new Polygon();
-
-            if (Math.Abs(normal.X) > Math.Abs(normal.Y) && Math.Abs(normal.X) > Math.Abs(normal.Z))
-            {
-                //  (yz) projection
-                foreach (var p in inputpolygon.ExteriorRing.Points)
-                {
-                    polygonflat.ExteriorRing.Points.Add(new Point((double)p.Y, (double)p.Z));
-                }
-            }
-            else if (Math.Abs(normal.Y) > Math.Abs(normal.Z))
-            {
-                // # (zx) projection
-                foreach (var p in inputpolygon.ExteriorRing.Points)
-                {
-                    polygonflat.ExteriorRing.Points.Add(new Point((double)p.X, (double)p.Z));
-                }
-            }
-            else
-            {
-                // (xy) projextion
-                foreach (var p in inputpolygon.ExteriorRing.Points)
-                {
-                    polygonflat.ExteriorRing.Points.Add(new Point((double)p.X, (double)p.Y));
-                }
-            }
-
-            return polygonflat;
-        }
-
-        private static Polygon GetPolygon(Polygon inputpolygon, Vector3 normal, List<int> trianglesIndices, int i)
-        {
-            var t = new Polygon();
-
-            var firstPoint = GetPoint(inputpolygon, trianglesIndices[i * 3]);
-            t.ExteriorRing.Points.Add(firstPoint);
-            t.ExteriorRing.Points.Add(GetPoint(inputpolygon, trianglesIndices[i * 3 + 1]));
-            t.ExteriorRing.Points.Add(GetPoint(inputpolygon, trianglesIndices[i * 3 + 2]));
-            t.ExteriorRing.Points.Add(firstPoint);
-
-            // check crossproduct again...
-            var normalTriangles = t.GetNormal();
-            var dot = Vector3.Dot(normal, normalTriangles);
-            var mustInvert =  dot < 0;
-
-            if (mustInvert)
-            {
-                t = InvertPolygon(t);
-            }
-
-            t.Dimension = Dimension.Xyz;
-            return t;
-        }
-
-        private static Polygon InvertPolygon(Polygon t)
-        {
-            var res = new Polygon();
-            res.ExteriorRing.Points.Add(t.ExteriorRing.Points[1]);
-            res.ExteriorRing.Points.Add(t.ExteriorRing.Points[0]);
-            res.ExteriorRing.Points.Add(t.ExteriorRing.Points[2]);
-            res.ExteriorRing.Points.Add(t.ExteriorRing.Points[1]);
-            t = res;
-            return t;
-        }
-
-        private static List<int> Tesselate(Polygon footprint)
-        {
-            var points = footprint.ExteriorRing.Points;
-
-            var data = new List<double>();
-            var holeIndices = new List<int>();
-
-            for(var p=0;p< points.Count-1;p++)
-            {
-                data.Add((double)points[p].X);
-                data.Add((double)points[p].Y);
-            }
-
-            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
-            return trianglesIndices;
-        }
-
-        private static Point GetPoint(Polygon polygon, int index)
-        {
-            return polygon.ExteriorRing.Points[index];
         }
     }
 }
