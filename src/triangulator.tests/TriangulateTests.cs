@@ -21,7 +21,7 @@ namespace Triangulate.Tests
             var normal = geom.GetNormal();
 
             //assert
-            Assert.AreNotEqual(normal, new Vector3(0, 0, 0));
+            Assert.That(new Vector3(0, 0, 0), Is.Not.EqualTo(normal));
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace Triangulate.Tests
             var multipolygonResult = (MultiPolygon)Wkx.Geometry.Deserialize<WkbSerializer>(wkbResult);
 
             // assert
-            Assert.IsTrue(multipolygonResult.Geometries.Count == multipolygon.Geometries.Count);
+            Assert.That(multipolygonResult.Geometries.Count == multipolygon.Geometries.Count);
         }
 
 
@@ -54,7 +54,7 @@ namespace Triangulate.Tests
             var polyhedralsurface_after_wkt = polyhedralsurface_after.AsText();
 
             // assert
-            Assert.IsTrue(expected == polyhedralsurface_after_wkt);
+            Assert.That(expected == polyhedralsurface_after_wkt);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Triangulate.Tests
             // assert
             var wkbResult = Geometry.Deserialize<WkbSerializer>(bytes);
             var polyhedralsurface_after_wkt = wkbResult.AsText();
-            Assert.IsTrue(expectedResult == polyhedralsurface_after_wkt);
+            Assert.That(expectedResult == polyhedralsurface_after_wkt);
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace Triangulate.Tests
             
             // assert
             var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkbTriangulated);
-            Assert.IsTrue(polyhedral.Geometries.Count == 22);
+            Assert.That(polyhedral.Geometries.Count == 22);
 
             GltfCreator.CreateGltf(polyhedral, @"wkb.gltf");
         }

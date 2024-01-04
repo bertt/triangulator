@@ -19,6 +19,6 @@ public class PolygonExtensionsTests
         var normal = geom.GetNormal();
 
         //assert
-        Assert.AreNotEqual(normal, new Vector3(0,0,0));
+        Assert.That(new Vector3(0,0,0), Is.Not.EqualTo(normal));
     }
 }
