@@ -18,4 +18,17 @@ public class NormalTests
         Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0);
     }
 
+    [Test]
+    public void AvoidCollinearPoints()
+    {
+        // arrange
+        var wkt = "POLYGON Z ((0 0 0, 0 1 0, 0 2 0, 0 3 0, 1 3 0, 2 3 0, 3 3 0, 3 2 0, 3 1 0, 3 0 0, 2 0 0, 1 0 0, 0 0 0))";
+        var polygon = (Polygon)Geometry.Deserialize<WktSerializer>(wkt);
+
+        // act
+        var normal = polygon.GetNormal();
+
+        // assert
+        Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0);
+    }
 }
