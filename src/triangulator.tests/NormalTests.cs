@@ -17,7 +17,7 @@ public class NormalTests
         var normal = polygon.GetNormal();
 
         // assert
-        Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0);
+        Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0, Is.False);
     }
 
     [Test]
@@ -31,6 +31,6 @@ public class NormalTests
         var normal = polygon.GetNormal();
 
         // assert
-        Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0);
+        Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0, Is.False);
     }
 }
