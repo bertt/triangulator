@@ -1,6 +1,6 @@
 # Triangulator
 
-.NET 6 library for triangulating 3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon) using Earcut algorithm
+.NET 6 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon) using Earcut algorithm
 
 ## NuGet
 
@@ -26,8 +26,12 @@ POLYHEDRALSURFACE Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 0, 0 1 0, 0 1 1
 To:
 
 ```
-POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)),((1 1 0,1 0 0,0 1 0,1 1 0)),((0 1 1,0 0 1,0 0 0,0 1 1)),((0 0 0,0 1 0,0 1 1,0 0 0)),((1 0 1,0 0 1,0 0 0,1 0 1)),((0 0 0,1 0 0,1 0 1,0 0 0)),((1 1 1,1 0 1,0 1 1,1 1 1)),((0 0 1,0 1 1,1 0 1,0 0 1)),((1 0 0,1 1 0,1 1 1,1 0 0)),((1 1 1,1 0 1,1 0 0,1 1 1)),((1 1 1,1 1 0,0 1 1,1 1 1)),((0 1 0,0 1 1,1 1 0,0 1 0)))
+POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 0 0,0 0 0)),((1 1 0,1 0 0,0 1 0,1 1 0)),((0 0 1,0 0 0,0 1 0,0 0 1)),((0 1 0,0 1 1,0 0 1,0 1 0)),((0 0 1,0 0 0,1 0 0,0 0 1)),((1 0 0,1 0 1,0 0 1,1 0 0)),((1 1 1,1 0 1,0 1 1,1 1 1)),((0 0 1,0 1 1,1 0 1,0 0 1)),((1 1 0,1 1 1,1 0 1,1 1 0)),((1 0 1,1 0 0,1 1 0,1 0 1)),((1 1 1,1 1 0,0 1 1,1 1 1)),((0 1 0,0 1 1,1 1 0,0 1 0)))
 ```
+
+Sample result triangulation with interior rings:
+
+<img src="holes.png" width="300" />
 
 ## Remarks
 
