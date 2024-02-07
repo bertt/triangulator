@@ -18,16 +18,31 @@ namespace Triangulate
             {
                 return Triangulate(multiPolygon);
             }
+            else if (geom is Polygon polygon)
+            {
+                return Triangulate(polygon);
+            }
             else
             {
                 throw new NotSupportedException($"Geometry type {geom.GeometryType} is not supported");
             }
-        }       
+        }
         public static byte[] Triangulate(byte[] wkb)
         {
             var geom = Geometry.Deserialize<WkbSerializer>(wkb);
             var result = Triangulate(geom);
             return result.AsBinary();
+        }
+
+        private static MultiPolygon Triangulate(Polygon polygon)
+        {
+            var polygons = TriangulatePolygon(polygon);
+            var result = new MultiPolygon
+            {
+                Dimension = Dimension.Xyz
+            };
+            result.Geometries.AddRange(polygons);
+            return result;
         }
 
         private static MultiPolygon Triangulate(MultiPolygon multipolygon)
@@ -59,13 +74,13 @@ namespace Triangulate
             var result = new List<Polygon>();
             foreach (var g in geometries)
             {
-                var triangles = Triangulate(g);
+                var triangles = TriangulatePolygon(g);
                 result.AddRange(triangles);
             }
             return result;
         }
 
-        private static List<Polygon> Triangulate(Polygon inputpolygon)
+        private static List<Polygon> TriangulatePolygon(Polygon inputpolygon)
         {
             var normal = inputpolygon.GetNormal();
             var polygonflat = Flatten(inputpolygon, normal);
@@ -91,6 +106,15 @@ namespace Triangulate
                 {
                     polygonflat.ExteriorRing.Points.Add(new Point((double)p.Y, (double)p.Z));
                 }
+                foreach (var ring in inputpolygon.InteriorRings)
+                {
+                    var newRing = new LinearRing();
+                    foreach (var p in ring.Points)
+                    {
+                        newRing.Points.Add(new Point((double)p.Y, (double)p.Z));
+                    }
+                    polygonflat.InteriorRings.Add(newRing);
+                }
             }
             else if (Math.Abs(normal.Y) > Math.Abs(normal.Z))
             {
@@ -99,6 +123,15 @@ namespace Triangulate
                 {
                     polygonflat.ExteriorRing.Points.Add(new Point((double)p.X, (double)p.Z));
                 }
+                foreach (var ring in inputpolygon.InteriorRings)
+                {
+                    var newRing = new LinearRing();
+                    foreach (var p in ring.Points)
+                    {
+                        newRing.Points.Add(new Point((double)p.X, (double)p.Z));
+                    }
+                    polygonflat.InteriorRings.Add(newRing);
+                }
             }
             else
             {
@@ -106,6 +139,16 @@ namespace Triangulate
                 foreach (var p in inputpolygon.ExteriorRing.Points)
                 {
                     polygonflat.ExteriorRing.Points.Add(new Point((double)p.X, (double)p.Y));
+                }
+
+                foreach (var ring in inputpolygon.InteriorRings)
+                {
+                    var newRing = new LinearRing();
+                    foreach (var p in ring.Points)
+                    {
+                        newRing.Points.Add(new Point((double)p.X, (double)p.Y));
+                    }
+                    polygonflat.InteriorRings.Add(newRing);
                 }
             }
 
@@ -125,7 +168,7 @@ namespace Triangulate
             // check crossproduct again...
             var normalTriangles = t.GetNormal();
             var dot = Vector3.Dot(normal, normalTriangles);
-            var mustInvert =  dot < 0;
+            var mustInvert = dot < 0;
 
             if (mustInvert)
             {
@@ -154,10 +197,20 @@ namespace Triangulate
             var data = new List<double>();
             var holeIndices = new List<int>();
 
-            for(var p=0;p< points.Count-1;p++)
+            foreach (var p in points)
             {
-                data.Add((double)points[p].X);
-                data.Add((double)points[p].Y);
+                data.Add((double)p.X);
+                data.Add((double)p.Y);
+            }
+
+            foreach (var interiorRing in footprint.InteriorRings)
+            {
+                holeIndices.Add((data.Count / 2) + 1);
+                foreach (var p in interiorRing.Points)
+                {
+                    data.Add((double)p.X);
+                    data.Add((double)p.Y);
+                }
             }
 
             var trianglesIndices = Earcut.Tessellate(data, holeIndices);
@@ -166,7 +219,20 @@ namespace Triangulate
 
         private static Point GetPoint(Polygon polygon, int index)
         {
-            return polygon.ExteriorRing.Points[index];
+            if(index < polygon.ExteriorRing.Points.Count)
+            {
+                return polygon.ExteriorRing.Points[index];
+            }
+            else
+            {
+                // make a list of the vertices of the interior rings
+                var interiorRingVertices = new List<Point>();
+                foreach (var ring in polygon.InteriorRings)
+                {
+                    interiorRingVertices.AddRange(ring.Points);
+                }
+                return interiorRingVertices[index - polygon.ExteriorRing.Points.Count];
+            }
         }
     }
 }
