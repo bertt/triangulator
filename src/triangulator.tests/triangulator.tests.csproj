@@ -17,7 +17,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0030" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0031" />
     <PackageReference Include="Wkx" Version="0.5.1" />
   </ItemGroup>
 

@@ -14,8 +14,8 @@ namespace Triangulate.Tests
             // convert to glTF to be able to inspect the result...
             var material1 = new MaterialBuilder()
                .WithDoubleSide(true)
-               .WithSpecularGlossinessShader()
-               .WithChannelParam(KnownChannel.SpecularGlossiness, new Vector4(0.7f, 0, 0f, 1.0f))
+               .WithMetallicRoughnessShader()
+               .WithChannelParam(KnownChannel.BaseColor, KnownProperty.RGBA, new Vector4(0.7f, 0, 0f, 1.0f))
                .WithEmissive(new Vector3(0.2f, 0.3f, 0.1f));
 
             var mesh = new MeshBuilder<VERTEX>("mesh");
