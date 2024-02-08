@@ -76,6 +76,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2024-02-07: release 1.3.1: normals algorithm fix for higher precision
+
 2024-02-07: release 1.3.0: add support for interior rings + polygons
 
 2023-09-26: release 1.2.3: fix normal close to 0
