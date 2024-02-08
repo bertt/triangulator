@@ -15,7 +15,9 @@ public class NormalTests
         var normal = polygon.GetNormal();
 
         // assert
-        Assert.That(normal.X==0 && normal.Y==0 && normal.Z == 0);
+        Assert.That(normal.X, Is.EqualTo(0).Within(1e-11));
+        Assert.That(normal.Y, Is.EqualTo(0));
+        Assert.That(normal.Z, Is.EqualTo(-1));
     }
 
 }
