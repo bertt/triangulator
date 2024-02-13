@@ -1,5 +1,6 @@
 ﻿using SharpGLTF.Geometry;
 using SharpGLTF.Materials;
+using System.Collections.Generic;
 using System.Numerics;
 using Wkx;
 
@@ -11,6 +12,20 @@ namespace Triangulate.Tests
     {
         public static void CreateGltf(PolyhedralSurface triangulatedGeometry, string outputfile)
         {
+            var geometries = triangulatedGeometry.Geometries;
+
+            CreateGltf(outputfile, geometries);
+        }
+
+        public static void CreateGltf(MultiPolygon multiPolygon, string outputfile)
+        {
+            var geometries = multiPolygon.Geometries;
+
+            CreateGltf(outputfile, geometries);
+        }
+
+        private static void CreateGltf(string outputfile, List<Polygon> geometries)
+        {
             // convert to glTF to be able to inspect the result...
             var material1 = new MaterialBuilder()
                .WithDoubleSide(true)
@@ -21,7 +36,7 @@ namespace Triangulate.Tests
             var mesh = new MeshBuilder<VERTEX>("mesh");
 
             var prim = mesh.UsePrimitive(material1);
-            foreach (var t in triangulatedGeometry.Geometries)
+            foreach (var t in geometries)
             {
                 prim.AddTriangle(
                     new VERTEX((float)t.ExteriorRing.Points[0].X, (float)t.ExteriorRing.Points[0].Y, (float)t.ExteriorRing.Points[0].Z),

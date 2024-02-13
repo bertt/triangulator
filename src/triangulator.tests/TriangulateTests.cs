@@ -2,12 +2,24 @@ using NUnit.Framework;
 using System.IO;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using Wkx;
 
 namespace Triangulate.Tests
 {
     public class Tests
     {
+        [Test]
+        public void TriangulateLine()
+        {
+            var wkt = "LINESTRING(-10 0 0,0 0 0,0 10 0)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+
+            var triangles = Triangulator.Triangulate(line,2);
+
+            GltfCreator.CreateGltf(triangles, "lines.gltf");
+        }
+
         [Test]
         // testcase: ogc_fid = ogc_fid = 13967 of Delaware dataset
         public void TriangulateWithInteriorRing()

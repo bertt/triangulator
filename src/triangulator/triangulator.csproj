@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="THREE" Version="1.0.0" />
     <PackageReference Include="Wkx" Version="0.5.1" />
   </ItemGroup>
 

@@ -22,6 +22,10 @@ namespace Triangulate
             {
                 return Triangulate(polygon);
             }
+            else if (geom is LineString lineString)
+            {
+                return Triangulate(lineString);
+            }
             else
             {
                 throw new NotSupportedException($"Geometry type {geom.GeometryType} is not supported");
@@ -32,6 +36,42 @@ namespace Triangulate
             var geom = Geometry.Deserialize<WkbSerializer>(wkb);
             var result = Triangulate(geom);
             return result.AsBinary();
+        }
+
+        public static MultiPolygon Triangulate(LineString lineString, float radius = 1)
+        {
+            var polygons = new List<Polygon>();
+
+            var points = new List<THREE.Vector3>();
+            foreach (var point in lineString.Points)
+            {
+                points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)point.Z));
+            }
+
+            var catmullRomCurve3 = new THREE.CatmullRomCurve3(points);
+            var tubeGeometry = new THREE.TubeGeometry(catmullRomCurve3, 64, radius, 8, false);
+
+            foreach (var face in tubeGeometry.Faces)
+            {
+                var p0 = tubeGeometry.Vertices[face.a];
+                var p1 = tubeGeometry.Vertices[face.b];
+                var p2 = tubeGeometry.Vertices[face.c];
+
+                var polygon = new Polygon();
+                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
+                polygon.ExteriorRing.Points.Add(new Point(p1.X, p1.Y, p1.Z));
+                polygon.ExteriorRing.Points.Add(new Point(p2.X, p2.Y, p2.Z));
+                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
+
+                polygons.Add(polygon);
+            }
+
+            var result = new MultiPolygon
+            {
+                Dimension = Dimension.Xyz
+            };
+            result.Geometries.AddRange(polygons);
+            return result;
         }
 
         private static MultiPolygon Triangulate(Polygon polygon)
@@ -219,7 +259,7 @@ namespace Triangulate
 
         private static Point GetPoint(Polygon polygon, int index)
         {
-            if(index < polygon.ExteriorRing.Points.Count)
+            if (index < polygon.ExteriorRing.Points.Count)
             {
                 return polygon.ExteriorRing.Points[index];
             }
