@@ -34,7 +34,7 @@ namespace Triangulate
             return result.AsBinary();
         }
 
-        public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int tubularSegments = 64, int radialSegments = 8, bool closed = false)
+        public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
         {
             var polygons = new List<Polygon>();
 

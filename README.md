@@ -113,6 +113,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2024-02-14: release 1.4.1: make tubularSegments and radialSegments optional
+
 2024-02-14: release 1.4.0: add support for lines
 
 2024-02-07: release 1.3.1: normals algorithm fix for higher precision
