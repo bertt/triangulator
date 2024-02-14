@@ -1,6 +1,7 @@
 # Triangulator
 
-.NET 6 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon) using Earcut algorithm
+.NET 6 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon) using Earcut algorithm. Lines
+can be triangulated using the TubeGeometry algorithm from Three.JS.
 
 ## NuGet
 
@@ -38,7 +39,7 @@ Sample result triangulation with interior rings:
 - Input wkb must be of type PolyhedralSurface/MultiPolygon/Polygon, otherwise an error will occur;
 - Triangulated geometry is returned as WKB (as PolyhedralSurface/MultiPolygon);
 
-## Method 
+## Polygons Method 
 
 3D Triangulation is performed in 2D mode, by projecting each input polygon
 to yz, zx or xy plane. The plane to project to is determined by the normal vector of the 
@@ -61,6 +62,42 @@ the dot product between the normal of the polygon and the normal of the triangle
 product is negative, then the two vectors point in opposite directions and the triangle will be 
 inverted.
 
+## lines Method 
+
+Triangles of lines can be calculate using the Triangulate method using the following parameters:
+
+ - LineString lineString: line geometry
+ 
+ - float radius = 1
+ 
+ - int tubularSegments = 64
+ 
+ - int radialSegments = 8
+ 
+ - bool closed = false
+
+ A port of Three.JS TubeGeometry (https://github.com/hjoykim/THREE/) is used to calculate the triangles.
+ 
+First a line is fitted through the points using the CatmullRomCurve3 (https://threejs.org/docs/#api/en/extras/curves/CatmullRomCurve3). 
+
+After that the line is converted to a tube using the TubeGeometry (https://threejs.org/docs/?q=TubeGeometry#api/en/geometries/TubeGeometry).
+ 
+The result is a MultiPolygon with the triangles.
+
+Sample code: 
+
+
+```
+var wkt = "LINESTRING(-10 0 0,0 0 0,0 10 0)";
+var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+var triangles = Triangulator.Triangulate(line,2, 60, 8);
+```
+
+Sample result:
+
+<img src="line.png" width="300" />
+
+
 ## Benchmark
 
 todo
@@ -75,6 +112,8 @@ for visual inspections.
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
+
+2024-02-14: release 1.4.0: add support for lines
 
 2024-02-07: release 1.3.1: normals algorithm fix for higher precision
 
