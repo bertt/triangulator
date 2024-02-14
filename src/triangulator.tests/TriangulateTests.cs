@@ -2,7 +2,6 @@ using NUnit.Framework;
 using System.IO;
 using System.Numerics;
 using System.Text;
-using System.Threading;
 using Wkx;
 
 namespace Triangulate.Tests
@@ -17,7 +16,7 @@ namespace Triangulate.Tests
 
             var triangles = Triangulator.Triangulate(line,2, 60, 8);
 
-            GltfCreator.CreateGltf(triangles, "lines.gltf");
+            GltfCreator.CreateGltf(triangles, @"lines.gltf");
         }
 
         [Test]

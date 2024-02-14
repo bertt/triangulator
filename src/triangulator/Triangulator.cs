@@ -22,10 +22,6 @@ namespace Triangulate
             {
                 return Triangulate(polygon);
             }
-            else if (geom is LineString lineString)
-            {
-                return Triangulate(lineString);
-            }
             else
             {
                 throw new NotSupportedException($"Geometry type {geom.GeometryType} is not supported");
@@ -38,7 +34,7 @@ namespace Triangulate
             return result.AsBinary();
         }
 
-        public static MultiPolygon Triangulate(LineString lineString, float radius = 1)
+        public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int tubularSegments = 64, int radialSegments = 8, bool closed = false)
         {
             var polygons = new List<Polygon>();
 
@@ -49,7 +45,7 @@ namespace Triangulate
             }
 
             var catmullRomCurve3 = new THREE.CatmullRomCurve3(points);
-            var tubeGeometry = new THREE.TubeGeometry(catmullRomCurve3, 64, radius, 8, false);
+            var tubeGeometry = new THREE.TubeGeometry(catmullRomCurve3, tubularSegments, radius, radialSegments, closed);
 
             foreach (var face in tubeGeometry.Faces)
             {
