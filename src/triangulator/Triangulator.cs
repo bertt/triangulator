@@ -40,7 +40,7 @@ namespace Triangulate
 
             foreach(var geom in lineString.Geometries)
             {
-                var triangles = Triangulate((LineString)geom, radius, tubularSegments, radialSegments, closed);
+                var triangles = Triangulate(geom, radius, tubularSegments, radialSegments, closed);
                 polygons.AddRange(triangles.Geometries);
             }
 
@@ -55,6 +55,11 @@ namespace Triangulate
 
         public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
         {
+            if(lineString.Points.Count < 2)
+            {
+                throw new ArgumentException("LineString must contain at least 2 points");
+            }
+
             var polygons = new List<Polygon>();
 
             var points = new List<THREE.Vector3>();
@@ -63,8 +68,9 @@ namespace Triangulate
                 points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)point.Z));
             }
 
-            var catmullRomCurve3 = new THREE.CatmullRomCurve3(points);
-            var tubeGeometry = new THREE.TubeGeometry(catmullRomCurve3, tubularSegments, radius, radialSegments, closed);
+            THREE.Curve curve = points.Count == 2 ? new THREE.LineCurve3(points[0], points[1]) : new THREE.CatmullRomCurve3(points);
+
+            var tubeGeometry = new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, closed);
 
             foreach (var face in tubeGeometry.Faces)
             {

@@ -11,17 +11,32 @@ namespace Triangulate.Tests
         [Test]
         public void TriangulateMultiLineString()
         {
-            var wkt = "MULTILINESTRING Z ((3763315.799271699 286413.6056370016 5124311.671963081,3763266.342667458 286473.67236574384 5124344.414418806,3763210.3960400973 286548.5078986015 5124381.765858143,3763152.978906794 286621.42283605755 5124419.449608338,3763101.929717718 286694.671551758 5124452.616537503))";
+            var wkt = "MULTILINESTRING Z ((-10 0 0,0 0 0,0 10 0), (1 0 0,2 0 0, 3 0 0))";
 
             var line = (MultiLineString)Geometry.Deserialize<WktSerializer>(wkt);
 
             var triangles = Triangulator.Triangulate(line, 1, 60);
 
-            Assert.That(triangles.Geometries.Count == 948);
+            Assert.That(triangles.Geometries.Count == 960*2);
 
             GltfCreator.CreateGltf(triangles, @"multilines.gltf");
 
         }
+
+        [Test]
+        public void TriangulateLineOnly2Points()
+        {
+            var wkt = "LINESTRING (1 0 0, 20 0 0)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+
+            var triangles = Triangulator.Triangulate(line, 2, 60);
+
+            Assert.That(triangles.Geometries.Count == 960);
+
+            GltfCreator.CreateGltf(triangles, @"lines.gltf");
+        }
+
+
         [Test]
         public void TriangulateLine()
         {

@@ -113,6 +113,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2024-02-20: release 1.4.3: fix lines of 2 points
+
 2024-02-20: release 1.4.2: add multi-line support
 
 2024-02-14: release 1.4.1: make tubularSegments and radialSegments optional
