@@ -64,9 +64,9 @@ inverted.
 
 ## lines Method 
 
-Triangles of lines can be calculate using the Triangulate method using the following parameters:
+Triangles of (multi)lines can be calculate using the Triangulate method using the following parameters:
 
- - LineString lineString: line geometry
+ - (Multi)LineString lineString: line geometry
  
  - float radius = 1
  
@@ -112,6 +112,8 @@ for visual inspections.
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
+
+2024-02-20: release 1.4.2: add multi-line support
 
 2024-02-14: release 1.4.1: make tubularSegments and radialSegments optional
 
