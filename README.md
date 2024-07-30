@@ -1,6 +1,6 @@
 # Triangulator
 
-.NET 6 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon/Multiline/Line) using Earcut algorithm. Lines
+.NET 8 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon/Multiline/Line) using Earcut algorithm. Lines
 can be triangulated using the TubeGeometry algorithm from Three.JS.
 
 ## NuGet

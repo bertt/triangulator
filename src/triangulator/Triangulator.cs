@@ -1,6 +1,7 @@
 ﻿using EarcutNet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using Wkx;
 
@@ -51,6 +52,75 @@ namespace Triangulate
             result.Geometries.AddRange(polygons);
             return result;
         }
+
+
+        public static MultiPolygon Triangulate1(LineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
+        {
+            if (lineString.Points.Count < 2)
+            {
+                throw new ArgumentException("LineString must contain at least 2 points");
+            }
+
+            var polygons = new List<Polygon>();
+
+            var points = new List<THREE.Vector3>();
+            foreach (var point in lineString.Points)
+            {
+                points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)point.Z));
+                Debug.WriteLine($"new THREE.Vector3({point.X}, {point.Y}, {point.Z}),");
+            }
+
+            THREE.Curve curve = points.Count == 2 ? new THREE.LineCurve3(points[0], points[1]) : new THREE.CatmullRomCurve3(points);
+
+            var divisions = 2;
+
+
+            var splinePoints = new List<THREE.Vector3>();
+            for (var i = 0; i < points.Count - 1; i++)
+            {
+                var start = points[i];
+                var end = points[i + 1];
+
+                splinePoints.Add(start);
+
+                for (var j = 1; j <= divisions; j++)
+                {
+                    var t = j / divisions;
+                    var intermediatePoint = curve.GetPointAt((i + t) / (points.Count - 1));
+                    splinePoints.Add(intermediatePoint);
+                }
+
+                splinePoints.Add(end);
+            }
+
+
+            var splineCurve = new THREE.CatmullRomCurve3(splinePoints); 
+
+            var tubeGeometry = new THREE.TubeGeometry(splineCurve, tubularSegments, radius, radialSegments, closed);
+
+            foreach (var face in tubeGeometry.Faces)
+            {
+                var p0 = tubeGeometry.Vertices[face.a];
+                var p1 = tubeGeometry.Vertices[face.b];
+                var p2 = tubeGeometry.Vertices[face.c];
+
+                var polygon = new Polygon();
+                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
+                polygon.ExteriorRing.Points.Add(new Point(p1.X, p1.Y, p1.Z));
+                polygon.ExteriorRing.Points.Add(new Point(p2.X, p2.Y, p2.Z));
+                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
+
+                polygons.Add(polygon);
+            }
+
+            var result = new MultiPolygon
+            {
+                Dimension = Dimension.Xyz
+            };
+            result.Geometries.AddRange(polygons);
+            return result;
+        }
+
 
 
         public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
