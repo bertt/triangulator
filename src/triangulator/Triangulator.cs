@@ -1,8 +1,5 @@
-﻿using EarcutNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
 using Wkx;
 
 namespace Triangulate
@@ -35,13 +32,14 @@ namespace Triangulate
             return result.AsBinary();
         }
 
-        public static MultiPolygon Triangulate(MultiLineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
+        public static MultiPolygon Triangulate(MultiLineString lineString, float radius = 1, int? radialSegments = 8, bool closed = false)
         {
             var polygons = new List<Polygon>();
 
             foreach(var geom in lineString.Geometries)
             {
-                var triangles = Triangulate(geom, radius, tubularSegments, radialSegments, closed);
+                var triangles = Triangulate(geom, radius, radialSegments, closed); 
+
                 polygons.AddRange(triangles.Geometries);
             }
 
@@ -53,65 +51,15 @@ namespace Triangulate
             return result;
         }
 
-
-        public static MultiPolygon Triangulate1(LineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
+        public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int? radialSegments = 8, bool closed = false)
         {
             if (lineString.Points.Count < 2)
             {
                 throw new ArgumentException("LineString must contain at least 2 points");
             }
 
-            var polygons = new List<Polygon>();
-
-            var points = new List<THREE.Vector3>();
-            foreach (var point in lineString.Points)
-            {
-                points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)point.Z));
-                Debug.WriteLine($"new THREE.Vector3({point.X}, {point.Y}, {point.Z}),");
-            }
-
-            THREE.Curve curve = points.Count == 2 ? new THREE.LineCurve3(points[0], points[1]) : new THREE.CatmullRomCurve3(points);
-
-            var divisions = 2;
-
-
-            var splinePoints = new List<THREE.Vector3>();
-            for (var i = 0; i < points.Count - 1; i++)
-            {
-                var start = points[i];
-                var end = points[i + 1];
-
-                splinePoints.Add(start);
-
-                for (var j = 1; j <= divisions; j++)
-                {
-                    var t = j / divisions;
-                    var intermediatePoint = curve.GetPointAt((i + t) / (points.Count - 1));
-                    splinePoints.Add(intermediatePoint);
-                }
-
-                splinePoints.Add(end);
-            }
-
-
-            var splineCurve = new THREE.CatmullRomCurve3(splinePoints); 
-
-            var tubeGeometry = new THREE.TubeGeometry(splineCurve, tubularSegments, radius, radialSegments, closed);
-
-            foreach (var face in tubeGeometry.Faces)
-            {
-                var p0 = tubeGeometry.Vertices[face.a];
-                var p1 = tubeGeometry.Vertices[face.b];
-                var p2 = tubeGeometry.Vertices[face.c];
-
-                var polygon = new Polygon();
-                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
-                polygon.ExteriorRing.Points.Add(new Point(p1.X, p1.Y, p1.Z));
-                polygon.ExteriorRing.Points.Add(new Point(p2.X, p2.Y, p2.Z));
-                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
-
-                polygons.Add(polygon);
-            }
+            var points = GetPoints(lineString);
+            var polygons = TriangulateLineCurve(points, radius, radialSegments, closed, false);
 
             var result = new MultiPolygon
             {
@@ -121,32 +69,41 @@ namespace Triangulate
             return result;
         }
 
-
-
-        public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int? tubularSegments = 64, int? radialSegments = 8, bool closed = false)
+        private static List<THREE.Vector3> GetPoints(LineString lineString)
         {
-            if(lineString.Points.Count < 2)
-            {
-                throw new ArgumentException("LineString must contain at least 2 points");
-            }
-
-            var polygons = new List<Polygon>();
-
             var points = new List<THREE.Vector3>();
             foreach (var point in lineString.Points)
             {
                 points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)point.Z));
             }
 
-            THREE.Curve curve = points.Count == 2 ? new THREE.LineCurve3(points[0], points[1]) : new THREE.CatmullRomCurve3(points);
+            return points;
+        }
 
-            var tubeGeometry = new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, closed);
+        private static List<Polygon> TriangulateLineCurve(List<THREE.Vector3> points, float radius, int? radialSegments, bool closed, bool addSpheres = true)
+        {
+            var polygons = new List<Polygon>();
 
-            foreach (var face in tubeGeometry.Faces)
+            for (int i = 0; i < points.Count - 1; i++)
             {
-                var p0 = tubeGeometry.Vertices[face.a];
-                var p1 = tubeGeometry.Vertices[face.b];
-                var p2 = tubeGeometry.Vertices[face.c];
+                var curve = new THREE.LineCurve3(points[i], points[i + 1]);
+                var tubeGeometry = new THREE.TubeGeometry(curve, 1, radius, radialSegments, closed);
+                var polys = ToPolygons(tubeGeometry);
+                polygons.AddRange(polys);
+            }
+
+            return polygons;
+        }
+
+        private static List<Wkx.Polygon> ToPolygons(THREE.Geometry geometry)
+        {
+            var polygons = new List<Polygon>();
+
+            foreach (var face in geometry.Faces)
+            {
+                var p0 = geometry.Vertices[face.a];
+                var p1 = geometry.Vertices[face.b];
+                var p2 = geometry.Vertices[face.c];
 
                 var polygon = new Polygon();
                 polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
@@ -157,12 +114,7 @@ namespace Triangulate
                 polygons.Add(polygon);
             }
 
-            var result = new MultiPolygon
-            {
-                Dimension = Dimension.Xyz
-            };
-            result.Geometries.AddRange(polygons);
-            return result;
+            return polygons;
         }
 
         private static MultiPolygon Triangulate(Polygon polygon)
@@ -211,7 +163,7 @@ namespace Triangulate
             return result;
         }
 
-        private static List<Polygon> TriangulatePolygon(Polygon inputpolygon)
+        private static List<Wkx.Polygon> TriangulatePolygon(Polygon inputpolygon)
         {
             var normal = inputpolygon.GetNormal();
             var polygonflat = Flatten(inputpolygon, normal);
@@ -226,7 +178,7 @@ namespace Triangulate
             return polygons;
         }
 
-        private static Polygon Flatten(Polygon inputpolygon, Vector3 normal)
+        private static Polygon Flatten(Polygon inputpolygon, System.Numerics.Vector3 normal)
         {
             var polygonflat = new Polygon();
 
@@ -286,7 +238,7 @@ namespace Triangulate
             return polygonflat;
         }
 
-        private static Polygon GetPolygon(Polygon inputpolygon, Vector3 normal, List<int> trianglesIndices, int i)
+        private static Polygon GetPolygon(Polygon inputpolygon, System.Numerics.Vector3 normal, List<int> trianglesIndices, int i)
         {
             var t = new Polygon();
 
@@ -298,7 +250,7 @@ namespace Triangulate
 
             // check crossproduct again...
             var normalTriangles = t.GetNormal();
-            var dot = Vector3.Dot(normal, normalTriangles);
+            var dot = System.Numerics.Vector3.Dot(normal, normalTriangles);
             var mustInvert = dot < 0;
 
             if (mustInvert)
@@ -344,7 +296,7 @@ namespace Triangulate
                 }
             }
 
-            var trianglesIndices = Earcut.Tessellate(data, holeIndices);
+            var trianglesIndices = EarcutNet.Earcut.Tessellate(data, holeIndices);
             return trianglesIndices;
         }
 

@@ -15,9 +15,9 @@ namespace Triangulate.Tests
 
             var line = (MultiLineString)Geometry.Deserialize<WktSerializer>(wkt);
 
-            var triangles = Triangulator.Triangulate(line, 1, 60);
+            var triangles = Triangulator.Triangulate(line);
 
-            Assert.That(triangles.Geometries.Count == 960*2);
+            Assert.That(triangles.Geometries.Count == 64);
 
             GltfCreator.CreateGltf(triangles, @"multilines.gltf");
 
@@ -29,11 +29,11 @@ namespace Triangulate.Tests
             var wkt = "LINESTRING (1 0 0, 20 0 0)";
             var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
 
-            var triangles = Triangulator.Triangulate(line, 2, 60);
+            var triangles = Triangulator.Triangulate(line, 2);
 
-            Assert.That(triangles.Geometries.Count == 960);
+            Assert.That(triangles.Geometries.Count == 16);
 
-            GltfCreator.CreateGltf(triangles, @"lines.gltf");
+            GltfCreator.CreateGltf(triangles, @"carmullromcurves.gltf");
         }
 
 
@@ -43,11 +43,11 @@ namespace Triangulate.Tests
             var wkt = "LINESTRING(-10 0 0,0 0 0,0 10 0)";
             var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
 
-            var triangles = Triangulator.Triangulate(line,2, 60);
+            var triangles = Triangulator.Triangulate(line, radius : 1);
 
-            Assert.That(triangles.Geometries.Count == 960);
+            Assert.That(triangles.Geometries.Count == 32);
 
-            GltfCreator.CreateGltf(triangles, @"lines.gltf");
+            GltfCreator.CreateGltf(triangles, @"linecurves.gltf");
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Triangulate.Tests
 
             // act
             var wkbTriangulated = Triangulator.Triangulate(buildingWkb);
-            
+
             // assert
             var polyhedral = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkbTriangulated);
             Assert.That(polyhedral.Geometries.Count == 22);

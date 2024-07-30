@@ -67,36 +67,22 @@ inverted.
 Triangles of (multi)lines can be calculate using the Triangulate method using the following parameters:
 
  - (Multi)LineString lineString: line geometry
- 
+
  - float radius = 1
- 
- - int tubularSegments = 64
  
  - int radialSegments = 8
  
  - bool closed = false
 
- A port of Three.JS TubeGeometry (https://github.com/hjoykim/THREE/) is used to calculate the triangles.
- 
-First a line is fitted through the points using the CatmullRomCurve3 (https://threejs.org/docs/#api/en/extras/curves/CatmullRomCurve3). 
+ A port of Three.JS TubeGeometry (https://github.com/hjoykim/THREE/) is used to calculate the mesh.
 
-After that the line is converted to a tube using the TubeGeometry (https://threejs.org/docs/?q=TubeGeometry#api/en/geometries/TubeGeometry).
- 
-The result is a MultiPolygon with the triangles.
+ Sample code:	
 
-Sample code: 
-
-
-```
+ ```
 var wkt = "LINESTRING(-10 0 0,0 0 0,0 10 0)";
 var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
-var triangles = Triangulator.Triangulate(line,2, 60, 8);
+var triangles = Triangulator.Triangulate(line,2);
 ```
-
-Sample result:
-
-<img src="line.png" width="300" />
-
 
 ## Benchmark
 
@@ -112,6 +98,8 @@ for visual inspections.
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
+
+2024-07-30: release 1.5.0: to .NET 8 + use LineCurve instead of CatmullRomCurve (better performance + more accurate)
 
 2024-02-20: release 1.4.3: fix lines of 2 points
 
