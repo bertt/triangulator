@@ -74,7 +74,8 @@ namespace Triangulate
             var points = new List<THREE.Vector3>();
             foreach (var point in lineString.Points)
             {
-                points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)point.Z));
+                var z = point.Z ?? 0;
+                points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)z));
             }
 
             return points;

@@ -24,6 +24,20 @@ namespace Triangulate.Tests
         }
 
         [Test]
+        public void TriangulateLineWithoutZ()
+        {
+            var wkt = "LINESTRING (1 0, 20 0)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+
+            var triangles = Triangulator.Triangulate(line, 2);
+
+            Assert.That(triangles.Geometries.Count == 16);
+
+            GltfCreator.CreateGltf(triangles, @"carmullromcurves.gltf");
+        }
+
+
+        [Test]
         public void TriangulateLineOnly2Points()
         {
             var wkt = "LINESTRING (1 0 0, 20 0 0)";

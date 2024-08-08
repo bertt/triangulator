@@ -99,6 +99,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2024-08-08: release 1.5.1: add support for lines without z (assuming z=0)
+
 2024-07-30: release 1.5.0: to .NET 8 + use LineCurve instead of CatmullRomCurve (better performance + more accurate)
 
 2024-02-20: release 1.4.3: fix lines of 2 points
