@@ -34,6 +34,10 @@ Sample result triangulation with interior rings:
 
 <img src="holes.png" width="300" />
 
+Sample with multiple interior rings:
+
+![image](https://github.com/user-attachments/assets/c6b71969-f2bc-4e5c-b4d1-c8abc1a147c5)
+
 ## Remarks
 
 - Input wkb must be of type PolyhedralSurface/MultiPolygon/Polygon, otherwise an error will occur;
