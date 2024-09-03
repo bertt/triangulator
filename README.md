@@ -99,6 +99,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2024-09-03: release 1.5.2: fix interior rings triangulation
+
 2024-08-08: release 1.5.1: add support for lines without z (assuming z=0)
 
 2024-07-30: release 1.5.0: to .NET 8 + use LineCurve instead of CatmullRomCurve (better performance + more accurate)
