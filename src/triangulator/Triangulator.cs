@@ -289,7 +289,7 @@ namespace Triangulate
 
             foreach (var interiorRing in footprint.InteriorRings)
             {
-                holeIndices.Add((data.Count / 2) + 1);
+                holeIndices.Add(data.Count/2);
                 foreach (var p in interiorRing.Points)
                 {
                     data.Add((double)p.X);
