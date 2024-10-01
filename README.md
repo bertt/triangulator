@@ -40,7 +40,7 @@ Sample with multiple interior rings:
 
 ## Remarks
 
-- Input wkb must be of type PolyhedralSurface/MultiPolygon/Polygon, otherwise an error will occur;
+- Input wkb must be of type PolyhedralSurface/MultiPolygon/Polygon/Line/Multiline, otherwise an error will occur;
 - Triangulated geometry is returned as WKB (as PolyhedralSurface/MultiPolygon);
 
 ## Polygons Method 
