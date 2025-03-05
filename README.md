@@ -99,6 +99,8 @@ wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
 
+2025-03-05: release 1.6.0: remove THREE dependency for lines + to .NET 6.0
+
 2024-09-03: release 1.5.2: fix interior rings triangulation
 
 2024-08-08: release 1.5.1: add support for lines without z (assuming z=0)
