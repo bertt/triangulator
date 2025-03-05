@@ -34,9 +34,13 @@ Sample result triangulation with interior rings:
 
 <img src="holes.png" width="300" />
 
+Sample with multiple interior rings:
+
+![image](https://github.com/user-attachments/assets/c6b71969-f2bc-4e5c-b4d1-c8abc1a147c5)
+
 ## Remarks
 
-- Input wkb must be of type PolyhedralSurface/MultiPolygon/Polygon, otherwise an error will occur;
+- Input wkb must be of type PolyhedralSurface/MultiPolygon/Polygon/Line/Multiline, otherwise an error will occur;
 - Triangulated geometry is returned as WKB (as PolyhedralSurface/MultiPolygon);
 
 ## Polygons Method 
@@ -98,6 +102,8 @@ for visual inspections.
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
+
+2024-09-03: release 1.5.2: fix interior rings triangulation
 
 2024-08-08: release 1.5.1: add support for lines without z (assuming z=0)
 

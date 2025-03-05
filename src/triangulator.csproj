@@ -13,10 +13,10 @@
     <PackageTags>wkb triangulate earcut</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Bert Temme</Copyright>
-    <Version>1.5.1</Version>
-	<AssemblyVersion>1.5.1.0</AssemblyVersion>
-	<FileVersion>1.5.1</FileVersion>
-	<PackageReleaseNotes>Add lines support</PackageReleaseNotes>
+    <Version>1.5.2</Version>
+	<AssemblyVersion>1.5.2.0</AssemblyVersion>
+	<FileVersion>1.5.2</FileVersion>
+	<PackageReleaseNotes>Fix interior rings</PackageReleaseNotes>
     <RootNamespace>Triangulate</RootNamespace>
   </PropertyGroup>
 
