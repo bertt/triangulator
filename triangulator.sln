@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "triangulator", "triangulator\triangulator.csproj", "{A218234E-A269-4CBA-97E5-5229CEE53626}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "triangulator", "src\triangulator.csproj", "{A218234E-A269-4CBA-97E5-5229CEE53626}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "triangulator.tests", "triangulator.tests\triangulator.tests.csproj", "{9877A6BC-E910-4DCA-A034-C0C6C3E011BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "triangulator.tests", "tests\triangulator.tests.csproj", "{9877A6BC-E910-4DCA-A034-C0C6C3E011BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{E213DD0E-C052-4FC1-A84E-359053488AEA}"
 	ProjectSection(SolutionItems) = preProject
