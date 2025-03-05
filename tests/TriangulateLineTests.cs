@@ -1,10 +1,32 @@
 ﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
 using Wkx;
 
 namespace Triangulate.Tests
 {
     public class TriangulateLineTests
     {
+        [Test]
+        public void TriangulateLine2PointsNewMethod()
+        {
+
+            var wkt = "LINESTRING (1 0 0, 20 0 0)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+
+            var points = line.Points;
+
+            Assert.That(points.Count == 2);
+            var triangles = Triangulator.Triangulate(line, 2);
+
+            Assert.That(triangles.Geometries.Count == 16);
+
+            GltfCreator.CreateGltf(triangles, @"d:\aaa\triangulate_line_2_points.gltf");
+            GltfCreator.CreateGltf(triangles, @"d:\aaa\triangulate_line_2_points_classic.gltf");
+        }
+
+
         [Test]
         public void TriangulateLine2Points()
         {
