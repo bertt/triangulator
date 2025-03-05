@@ -59,7 +59,7 @@ namespace Triangulate
             }
 
             var points = GetPoints(lineString);
-            var polygons = TriangulateLineCurve(points, radius, radialSegments, closed, false);
+            var polygons = TriangulateLineCurve(points, radius, radialSegments, closed);
 
             var result = new MultiPolygon
             {
@@ -81,7 +81,7 @@ namespace Triangulate
             return points;
         }
 
-        private static List<Polygon> TriangulateLineCurve(List<THREE.Vector3> points, float radius, int? radialSegments, bool closed, bool addSpheres = true)
+        private static List<Polygon> TriangulateLineCurve(List<THREE.Vector3> points, float radius, int? radialSegments, bool closed)
         {
             var polygons = new List<Polygon>();
 

@@ -6,7 +6,7 @@ namespace Triangulate.Tests
     public class TriangulateLineTests
     {
         [Test]
-        public void TriangulateLineOnly2Points()
+        public void TriangulateLine2Points()
         {
             var wkt = "LINESTRING (1 0 0, 20 0 0)";
             var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
@@ -15,12 +15,12 @@ namespace Triangulate.Tests
 
             Assert.That(triangles.Geometries.Count == 16);
 
-            GltfCreator.CreateGltf(triangles, @"carmullromcurves.gltf");
+            GltfCreator.CreateGltf(triangles, @"triangulate_line_2_points.gltf");
         }
 
 
         [Test]
-        public void TriangulateLine()
+        public void TriangulateLine3Points()
         {
             var wkt = "LINESTRING(-10 0 0,0 0 0,0 10 0)";
             var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
@@ -29,7 +29,7 @@ namespace Triangulate.Tests
 
             Assert.That(triangles.Geometries.Count == 32);
 
-            GltfCreator.CreateGltf(triangles, @"linecurves.gltf");
+            GltfCreator.CreateGltf(triangles, @"triangulate_line_3_points.gltf");
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Triangulate.Tests
 
             Assert.That(triangles.Geometries.Count == 64);
 
-            GltfCreator.CreateGltf(triangles, @"multilines.gltf");
+            GltfCreator.CreateGltf(triangles, @"triangulate_multiline.gltf");
 
         }
 
@@ -57,7 +57,7 @@ namespace Triangulate.Tests
 
             Assert.That(triangles.Geometries.Count == 16);
 
-            GltfCreator.CreateGltf(triangles, @"carmullromcurves.gltf");
+            GltfCreator.CreateGltf(triangles, @"triangulate_line_without_z.gltf");
         }
     }
 }
