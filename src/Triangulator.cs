@@ -32,13 +32,13 @@ namespace Triangulate
             return result.AsBinary();
         }
 
-        public static MultiPolygon Triangulate(MultiLineString lineString, float radius = 1, int? radialSegments = 8, bool closed = false)
+        public static MultiPolygon Triangulate(MultiLineString lineString, float radius = 1, int? radialSegments = 8)
         {
             var polygons = new List<Polygon>();
 
-            foreach(var geom in lineString.Geometries)
+            foreach (var geom in lineString.Geometries)
             {
-                var triangles = Triangulate(geom, radius, radialSegments, closed); 
+                var triangles = Triangulate(geom, radius, radialSegments);
 
                 polygons.AddRange(triangles.Geometries);
             }
@@ -51,72 +51,15 @@ namespace Triangulate
             return result;
         }
 
-        public static MultiPolygon Triangulate(LineString lineString, float radius = 1, int? radialSegments = 8, bool closed = false)
+        public static MultiPolygon Triangulate(LineString lineString, float radius, int? radialSegments = 8)
         {
-            if (lineString.Points.Count < 2)
-            {
-                throw new ArgumentException("LineString must contain at least 2 points");
-            }
+            var path = lineString.ToVector3();
 
-            var points = GetPoints(lineString);
-            var polygons = TriangulateLineCurve(points, radius, radialSegments, closed);
-
-            var result = new MultiPolygon
-            {
-                Dimension = Dimension.Xyz
-            };
-            result.Geometries.AddRange(polygons);
-            return result;
+            var circlePoints = LineTriangulator.GetCircles(path, radius, radialSegments);
+            var multiPolygon = LineTriangulator.GetTriangles(circlePoints, radialSegments);
+            return multiPolygon;
         }
 
-        private static List<THREE.Vector3> GetPoints(LineString lineString)
-        {
-            var points = new List<THREE.Vector3>();
-            foreach (var point in lineString.Points)
-            {
-                var z = point.Z ?? 0;
-                points.Add(new THREE.Vector3((float)point.X, (float)point.Y, (float)z));
-            }
-
-            return points;
-        }
-
-        private static List<Polygon> TriangulateLineCurve(List<THREE.Vector3> points, float radius, int? radialSegments, bool closed)
-        {
-            var polygons = new List<Polygon>();
-
-            for (int i = 0; i < points.Count - 1; i++)
-            {
-                var curve = new THREE.LineCurve3(points[i], points[i + 1]);
-                var tubeGeometry = new THREE.TubeGeometry(curve, 1, radius, radialSegments, closed);
-                var polys = ToPolygons(tubeGeometry);
-                polygons.AddRange(polys);
-            }
-
-            return polygons;
-        }
-
-        private static List<Wkx.Polygon> ToPolygons(THREE.Geometry geometry)
-        {
-            var polygons = new List<Polygon>();
-
-            foreach (var face in geometry.Faces)
-            {
-                var p0 = geometry.Vertices[face.a];
-                var p1 = geometry.Vertices[face.b];
-                var p2 = geometry.Vertices[face.c];
-
-                var polygon = new Polygon();
-                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
-                polygon.ExteriorRing.Points.Add(new Point(p1.X, p1.Y, p1.Z));
-                polygon.ExteriorRing.Points.Add(new Point(p2.X, p2.Y, p2.Z));
-                polygon.ExteriorRing.Points.Add(new Point(p0.X, p0.Y, p0.Z));
-
-                polygons.Add(polygon);
-            }
-
-            return polygons;
-        }
 
         private static MultiPolygon Triangulate(Polygon polygon)
         {

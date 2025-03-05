@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net8.0</TargetFramework>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  <TargetFrameworks>net6.0</TargetFrameworks>
+    <LangVersion>12</LangVersion>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>bertt.triangulator</PackageId>
     <Authors>Bert Temme</Authors>
     <Product>Triangulator</Product>
@@ -21,7 +22,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="THREE.OpenGL" Version="1.0.0" />
 	  <PackageReference Include="Wkx" Version="0.5.1" />
   </ItemGroup>
 
