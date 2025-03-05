@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
+using System;
 using Wkx;
 
 namespace Triangulate.Tests
@@ -9,21 +8,43 @@ namespace Triangulate.Tests
     public class TriangulateLineTests
     {
         [Test]
-        public void TriangulateLine2PointsNewMethod()
+        public void GenerateCirclePoints_BasicTest()
         {
+            // Arrange
+            var center = new Vector3(0, 0, 0);
+            Vector3 direction = new Vector3(0, 1, 0); // Y-as
+            float radius = 5f;
+            int segments = 4;
 
-            var wkt = "LINESTRING (1 0 0, 20 0 0)";
-            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+            // Act
+            var points = LineTriangulator.GetCirclePoints(
+                center,
+                direction,
+                radius,
+                segments);
 
-            var points = line.Points;
+            // Assert
+            Assert.That(segments== points.Count, "Number of points does not match the number of segments");
 
-            Assert.That(points.Count == 2);
-            var triangles = Triangulator.Triangulate(line, 2);
+            const float tolerance = 0.0001f;
+            foreach (Vector3 point in points)
+            {
+                float distance = Vector3.Distance(center, point);
+                Assert.That(Math.Abs(distance - radius) < tolerance,
+                    $"Point {point} has incorrect distance to center: {distance}");
+                
+                Assert.That(point.Y, Is.EqualTo(0).Within(tolerance), "Eerste punt X incorrect");
 
-            Assert.That(triangles.Geometries.Count == 16);
+            }
 
-            GltfCreator.CreateGltf(triangles, @"d:\aaa\triangulate_line_2_points.gltf");
-            GltfCreator.CreateGltf(triangles, @"d:\aaa\triangulate_line_2_points_classic.gltf");
+            Assert.That(points[0].X, Is.EqualTo(0).Within(tolerance), "Eerste punt X incorrect");
+            Assert.That(points[0].Y, Is.EqualTo(0).Within(tolerance), "Eerste punt Y incorrect");
+            Assert.That(points[0].Z, Is.EqualTo(-5).Within(tolerance), "Eerste punt Z incorrect");
+
+            Assert.That(points[1].X, Is.EqualTo(-5).Within(tolerance), "Tweede punt X incorrect");
+            Assert.That(points[1].Y, Is.EqualTo(0f).Within(tolerance), "Tweede punt Y incorrect");
+            Assert.That(points[1].Z, Is.EqualTo(0).Within(tolerance), "Tweede punt Z incorrect");
+
         }
 
 

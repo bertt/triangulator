@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Wkx;
 
 namespace Triangulate
@@ -33,13 +32,13 @@ namespace Triangulate
             return result.AsBinary();
         }
 
-        public static MultiPolygon Triangulate(MultiLineString lineString, float radius = 1, int radialSegments = 8)
+        public static MultiPolygon Triangulate(MultiLineString lineString, float radius = 1, int? radialSegments = 8)
         {
             var polygons = new List<Polygon>();
 
             foreach (var geom in lineString.Geometries)
             {
-                var triangles = Triangulate(geom, radius, radialSegments, false);
+                var triangles = Triangulate(geom, radius, radialSegments);
 
                 polygons.AddRange(triangles.Geometries);
             }
@@ -52,87 +51,15 @@ namespace Triangulate
             return result;
         }
 
-        public static MultiPolygon Triangulate(LineString lineString, float radius, int radialSegments = 8, bool closed = false)
+        public static MultiPolygon Triangulate(LineString lineString, float radius, int? radialSegments = 8)
         {
             var path = lineString.ToVector3();
-            var result = new MultiPolygon
-            {
-                Dimension = Dimension.Xyz
-            };
 
-            var circles = new List<List<Point>>();
-
-            // Genereer cirkels langs het pad
-            for (int i = 0; i < path.Count; i++)
-            {
-                var circlePoints = new List<Point>();
-
-                var up = new Vector3(0, 1, 0);
-                var direction = i < path.Count - 1 ?
-                    new Vector3(
-                        path[i + 1].X - path[i].X,
-                        path[i + 1].Y - path[i].Y,
-                        path[i + 1].Z - path[i].Z) :
-                    new Vector3(
-                        path[i].X - path[i - 1].X,
-                        path[i].Y - path[i - 1].Y,
-                        path[i].Z - path[i - 1].Z);
-
-                var right = Vector3.Cross(up, direction);
-                right = Vector3.Normalize(right);
-                var newUp = Vector3.Cross(direction, right);
-                newUp = Vector3.Normalize(newUp);
-
-                // Genereer punten rond de cirkel
-                for (int j = 0; j < radialSegments; j++)
-                {
-                    float angle = (float)(j * 2 * Math.PI / radialSegments);
-                    float x = (float)Math.Cos(angle) * radius;
-                    float y = (float)Math.Sin(angle) * radius;
-
-                    Point circlePoint = new Point(
-                        path[i].X + x * right.X + y * newUp.X,
-                        path[i].Y + x * right.Y + y * newUp.Y,
-                        path[i].Z + x * right.Z + y * newUp.Z
-                    );
-                    circlePoints.Add(circlePoint);
-                }
-                circles.Add(circlePoints);
-            }
-
-            var polygons = new List<Polygon>();
-
-            for (int i = 0; i < circles.Count - 1; i++)
-            {
-                List<Point> currentCircle = circles[i];
-                List<Point> nextCircle = circles[i + 1];
-
-                for (int j = 0; j < radialSegments; j++)
-                {
-                    int nextJ = (j + 1) % radialSegments;
-
-                    var polygon = new Polygon();
-                    polygon.ExteriorRing.Points.Add(currentCircle[j]);
-                    polygon.ExteriorRing.Points.Add(nextCircle[j]);
-                    polygon.ExteriorRing.Points.Add(currentCircle[nextJ]);
-                    polygon.ExteriorRing.Points.Add(currentCircle[j]);
-
-                    polygons.Add(polygon);
-
-                    polygon = new Polygon();
-                    polygon.ExteriorRing.Points.Add(currentCircle[nextJ]);
-                    polygon.ExteriorRing.Points.Add(nextCircle[j]);
-                    polygon.ExteriorRing.Points.Add(nextCircle[nextJ]);
-                    polygon.ExteriorRing.Points.Add(currentCircle[nextJ]);
-
-                    polygons.Add(polygon);
-                }
-            }
-
-            result.Geometries.AddRange(polygons);
-
-            return result;
+            var circlePoints = LineTriangulator.GetCircles(path, radius, radialSegments);
+            var multiPolygon = LineTriangulator.GetTriangles(circlePoints, radialSegments);
+            return multiPolygon;
         }
+
 
         private static MultiPolygon Triangulate(Polygon polygon)
         {
