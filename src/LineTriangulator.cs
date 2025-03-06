@@ -23,16 +23,29 @@ namespace Triangulate
 
             for (int i = 0; i < circles.Count - 1; i++)
             {
+                var isOdd = i % 2 == 1;
+                var delta = 0;
+
                 var currentCircle = circles[i];
                 var nextCircle = circles[i + 1];
+                if (isOdd)
+                {
+                    var delta0 = Vector3.Distance(currentCircle[0], nextCircle[0]);
+                    var delta4 = Vector3.Distance(currentCircle[0], nextCircle[4]);
+                    delta = delta0 < delta4 ? 0 : 4;    
+                }
 
                 for (int j = 0; j < radialSegments; j++)
                 {
                     int nextJ = (j + 1) % radialSegments.GetValueOrDefault();
 
+                    var k = (j + delta) % radialSegments.GetValueOrDefault();
+                    var nextK = (k + 1) % radialSegments.GetValueOrDefault();
+
+
                     var polygon = new Polygon();
                     polygon.ExteriorRing.Points.Add(ToPoint(currentCircle[j]));
-                    polygon.ExteriorRing.Points.Add(ToPoint(nextCircle[j]));
+                    polygon.ExteriorRing.Points.Add(ToPoint(nextCircle[k]));
                     polygon.ExteriorRing.Points.Add(ToPoint(currentCircle[nextJ]));
                     polygon.ExteriorRing.Points.Add(ToPoint(currentCircle[j]));
 
@@ -40,14 +53,14 @@ namespace Triangulate
 
                     polygon = new Polygon();
                     polygon.ExteriorRing.Points.Add(ToPoint(currentCircle[nextJ]));
-                    polygon.ExteriorRing.Points.Add(ToPoint(nextCircle[j]));
-                    polygon.ExteriorRing.Points.Add(ToPoint(nextCircle[nextJ]));
-                    polygon.ExteriorRing.Points.Add(ToPoint(currentCircle[nextJ]));
+                    polygon.ExteriorRing.Points.Add(ToPoint(nextCircle[k]));
+                    polygon.ExteriorRing.Points.Add(ToPoint(nextCircle[nextK]));
+                    polygon.ExteriorRing.Points.Add(ToPoint(currentCircle[nextK]));
 
                     polygons.Add(polygon);
                 }
 
-                i++;
+                // i++;
             }
 
             result.Geometries.AddRange(polygons);
@@ -98,6 +111,13 @@ namespace Triangulate
                 float angle = i * angleStep;
                 Vector3 cirkelPoint = point +
                     (v1 * (float)Math.Cos(angle) + v2 * (float)Math.Sin(angle)) * radius;
+
+                // round to 6 decimals
+                cirkelPoint = new Vector3(
+                    (float)Math.Round(cirkelPoint.X, 6),
+                    (float)Math.Round(cirkelPoint.Y, 6),
+                    (float)Math.Round(cirkelPoint.Z, 6)
+                );
                 points.Add(cirkelPoint);
             }
 
