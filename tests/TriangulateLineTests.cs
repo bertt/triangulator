@@ -70,7 +70,7 @@ namespace Triangulate.Tests
 
             var triangles = Triangulator.Triangulate(line, radius: 1);
 
-            Assert.That(triangles.Geometries.Count == 32);
+            Assert.That(triangles.Geometries.Count == 48);
 
             GltfCreator.CreateGltf(triangles, @"triangulate_line_3_points.gltf");
         }
@@ -84,9 +84,9 @@ namespace Triangulate.Tests
 
             var triangles = Triangulator.Triangulate(line);
 
-            Assert.That(triangles.Geometries.Count == 64);
+            Assert.That(triangles.Geometries.Count == 96);
 
-            GltfCreator.CreateGltf(triangles, @"triangulate_multiline.gltf");
+            GltfCreator.CreateGltf(triangles, @"triangu.gltf");
 
         }
 
@@ -101,6 +101,29 @@ namespace Triangulate.Tests
             Assert.That(triangles.Geometries.Count == 16);
 
             GltfCreator.CreateGltf(triangles, @"triangulate_line_without_z.gltf");
+        }
+
+
+        [Test]
+        public void TriangulateGasPipeline()
+        {
+            var wkt = "LINESTRING(-7.1959060416556895 -3.0653913647984155 6.5166643764823675,-7.0126300300471485 -2.980768570676446 6.368475022725761,-6.980049450881779 -3.079394771833904 6.350719616748393)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+
+            var triangles = Triangulator.Triangulate(line, 0.055f);
+
+            GltfCreator.CreateGltf(triangles, @"triangulate_gasline.gltf");
+        }
+
+        [Test]
+        public void TriangulateGasPipeline1()
+        {
+            var wkt = "LINESTRING(-8.079088067635894 -4.1475718496367335 7.713269264437258,-7.894537712447345 -4.066954427224118 7.564396608620882,-8.126223187893629 -3.3122587064863183 7.68663608469069)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+
+            var triangles = Triangulator.Triangulate(line, 0.055f);
+
+            GltfCreator.CreateGltf(triangles, @"triangulate_gasline2.gltf");
         }
     }
 }
