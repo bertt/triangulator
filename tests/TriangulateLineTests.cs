@@ -2,6 +2,8 @@
 using System.Numerics;
 using System;
 using Wkx;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Triangulate.Tests
 {
@@ -61,6 +63,123 @@ namespace Triangulate.Tests
             GltfCreator.CreateGltf(triangles, @"triangulate_line_2_points.gltf");
         }
 
+        public Dictionary<int, Vector3> GetOuterBend(List<Vector3> circle, Vector3 endpoint)
+        {
+            // create a list with indices and distances
+            var distances = new List<(int index, float distance)>();
+
+            for (int i = 0; i < circle.Count; i++)
+            {
+                var current = circle[i];
+                var distance = Vector3.Distance(current, endpoint);
+                distances.Add((i, distance));
+            }
+
+            distances.Sort((a, b) => b.distance.CompareTo(a.distance));
+
+            // get minimal the top half list of the distances
+            var topHalf = distances.GetRange(0, distances.Count / 2 + 1);
+
+            // convert to list of indices
+            var indices = topHalf.ConvertAll(x => x.index);
+            indices.Sort();
+            var result = new Dictionary<int,Vector3>();
+            foreach (var index in indices)
+            {
+                result.Add(index, circle[index]);
+            }
+            return result;
+        }
+
+        public int GetCorrespondingVertex(Dictionary<int,Vector3> input, Vector3 find)
+        {
+            double distance = Double.MaxValue;
+            int nearestId = -1;
+            foreach(var item in input)
+            {
+                var d = Vector3.Distance(item.Value, find);
+                if (d < distance)
+                {
+                    distance = d;
+                    nearestId = item.Key;
+                }
+            }
+
+            return nearestId;
+        }
+
+        [Test]
+        public void TestOuterbend()
+        {
+            var segments = 4;
+            var wkt = "LINESTRING(-10 0 0,0 0 0,0 -10 0)";
+            var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
+            var triangles = Triangulator.Triangulate(line, radius: 1, segments);
+
+            var circles = LineTriangulator.GetCircles(line.ToVector3(), 1, segments);
+            var endPoint1 = line.Points[2].ToVector3();
+            // 0,1,2,3,4
+            var outerBend = GetOuterBend(circles[1], endPoint1);
+
+            var endPoint0 = line.Points[0].ToVector3();
+            // 0,4,5,6,7
+            var outerBend1 = GetOuterBend(circles[2], endPoint0);
+
+            // take first point on first circle
+            var bend0_start = outerBend[0];
+            var bend0_end = outerBend.Last().Value;
+
+            // find nearest point on bend1
+
+            var nea0_start = GetCorrespondingVertex(outerBend1, bend0_start);
+            var nea0_end = GetCorrespondingVertex(outerBend1, bend0_end);
+
+            var start = outerBend1[nea0_start];
+            var end = outerBend1[nea0_end];
+            // triangles.Geometries.Clear();
+
+            for (var i = 0; i < outerBend.Count-1; i++)
+            {
+                var vertices = new List<Vector3>();
+                var p0 = outerBend.ElementAt(i).Value;
+                var p1 = outerBend.ElementAt(i+1).Value;
+                var p2 = outerBend1.ElementAt(i+1).Value;
+
+                var tri = new List<Vector3>() { p0, p1, p2, p0 };
+                var poly = ToPolygon(tri);
+                triangles.Geometries.Add(poly);
+            }
+
+            for (var j = 1; j < outerBend1.Count-1; j++)
+            {
+                var vertices = new List<Vector3>();
+                var p0 = outerBend1.ElementAt(j).Value;
+                var p1 = outerBend1.ElementAt(j + 1).Value;
+                var p2 = outerBend.ElementAt(j).Value;
+                p0 = new Vector3(1, 0, 0);
+                p1 = new Vector3(0, 0, 1);
+                p2 = new Vector3(0, 1, 0);
+
+                var tri = new List<Vector3>() { p0, p1, p2, p0 };
+                var poly = ToPolygon(tri);
+                triangles.Geometries.Add(poly);
+            }
+
+
+            GltfCreator.CreateGltf(triangles, @"d:\aaa\testbert.gltf");
+
+
+        }
+
+        private Polygon ToPolygon(List<Vector3> vertices)
+        {
+            var polygon = new Polygon();
+            foreach (var v in vertices)
+            {
+                polygon.ExteriorRing.Points.Add(new Point(v.X, v.Y, v.Z));
+            }
+            return polygon;
+        }
 
         [Test]
         public void TriangulateLine3Points()
