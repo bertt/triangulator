@@ -75,7 +75,18 @@ namespace Triangulate
                     // Interior point: use average of directions from previous and to next segment
                     var directionToPrev = Vector3.Normalize(path[i] - path[i - 1]);
                     var directionToNext = Vector3.Normalize(path[i + 1] - path[i]);
-                    direction = Vector3.Normalize(directionToPrev + directionToNext);
+                    var averageDirection = directionToPrev + directionToNext;
+                    
+                    // Handle 180-degree bends where the sum might be near zero
+                    if (averageDirection.Length() < 0.0001f)
+                    {
+                        // Use direction from previous segment for sharp reversal
+                        direction = directionToPrev;
+                    }
+                    else
+                    {
+                        direction = Vector3.Normalize(averageDirection);
+                    }
                 }
 
                 var circlePoints = GetCirclePoints(path[i], direction, radius, radialSegments);
