@@ -116,9 +116,9 @@ namespace Triangulate
             for (int i = 0; i < radialSegments; i++)
             {
                 float angle = i * angleStep;
-                Vector3 cirkelPoint = point +
+                Vector3 circlePoint = point +
                     (v1 * (float)Math.Cos(angle) + v2 * (float)Math.Sin(angle)) * radius;
-                points.Add(cirkelPoint);
+                points.Add(circlePoint);
             }
 
             return points;

@@ -108,7 +108,8 @@ namespace Triangulate.Tests
             var wkt = "LINESTRING(0 0 0, 10 0 0, 0 0 0)";
             var line = (LineString)Geometry.Deserialize<WktSerializer>(wkt);
             
-            var circles = LineTriangulator.GetCircles(line.ToVector3(), 1, 8);
+            var radialSegments = 8;
+            var circles = LineTriangulator.GetCircles(line.ToVector3(), 1, radialSegments);
             
             // Should still create 3 circles without errors
             Assert.That(circles.Count, Is.EqualTo(3));
@@ -116,10 +117,10 @@ namespace Triangulate.Tests
             // Verify all circles have the expected number of points
             foreach (var circle in circles)
             {
-                Assert.That(circle.Count, Is.EqualTo(8));
+                Assert.That(circle.Count, Is.EqualTo(radialSegments));
             }
             
-            var triangles = Triangulator.Triangulate(line, radius: 1, radialSegments: 8);
+            var triangles = Triangulator.Triangulate(line, radius: 1, radialSegments);
             
             // Should create triangles without errors
             Assert.That(triangles.Geometries.Count, Is.EqualTo(32));
