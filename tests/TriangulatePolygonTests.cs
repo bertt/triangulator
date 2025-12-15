@@ -80,10 +80,7 @@ namespace Triangulate.Tests
             var polyhedralsurface_after = (PolyhedralSurface)Geometry.Deserialize<WkbSerializer>(wkb);
             var polyhedralsurface_after_wkt = polyhedralsurface_after.AsText();
 
-            PolyhedralSurfaceEpsilonComparer.AssertEquals(polyhedralsurface, polyhedralsurface_after);
-
-            // Fix: Polyhedral service has minimal epsilon differences after WKB serialization/deserialization
-            // Assert.That(expected, Is.EqualTo(polyhedralsurface_after_wkt));
+            PolyhedralSurfaceAssertions.AssertPolyhedralEqualSimple(polyhedralsurface, polyhedralsurface_after);
         }
 
         [Test]
@@ -101,17 +98,7 @@ namespace Triangulate.Tests
 
             // assert
             var wkbResult = Geometry.Deserialize<WkbSerializer>(bytes);
-            try
-            {
-                PolyhedralSurfaceEpsilonComparer.AssertEquals(geometryExpectedResult, wkbResult as PolyhedralSurface);
-            }
-            catch (Exception e)
-            {
-                var wktResult = wkbResult.AsText();
-                Assert.That(expectedResult, Is.EqualTo(wktResult));
-                var a = 1;
-            }
-
+            PolyhedralSurfaceAssertions.AssertPolyhedralEqualSimple(geometryExpectedResult, (PolyhedralSurface)wkbResult);
         }
 
         [Test]
