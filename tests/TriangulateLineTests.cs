@@ -3,6 +3,7 @@ using System.Numerics;
 using System;
 using Wkx;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Triangulate.Tests
@@ -165,8 +166,13 @@ namespace Triangulate.Tests
                 triangles.Geometries.Add(poly);
             }
 
-
-            GltfCreator.CreateGltf(triangles, @"d:\aaa\testbert.gltf");
+            var outputDir = System.IO.Path.Combine(TestContext.CurrentContext.WorkDirectory, "triangulate_outputs");
+            System.IO.Directory.CreateDirectory(outputDir);
+            var fileName = $"testbert_{DateTime.UtcNow:yyyyMMdd_HHmmssfff}.gltf";
+            var filePath = System.IO.Path.Combine(outputDir, fileName);
+            GltfCreator.CreateGltf(triangles, filePath);
+            
+            Assert.That(File.Exists(filePath), "Gltf file was not created");
 
 
         }
