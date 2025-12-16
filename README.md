@@ -1,6 +1,6 @@
 # Triangulator
 
-.NET 6.0 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon/Multiline/Line) using Earcut algorithm.
+.NET Standard 2.0 library for triangulating 2D/3D WKB geometries (PolyhedralSurface/MultiPolygon/Polygon/Multiline/Line) using Earcut algorithm.
 
 ## NuGet
 
@@ -97,6 +97,8 @@ for visual inspections.
 wkx-sharp - https://github.com/cschwarz/wkx-sharp for handling geometries
 
 ## History
+
+2025-12-16: release 1.7.0: to .NET Standard 2.0 library 
 
 2025-03-05: release 1.6.0: remove THREE dependency for lines + to .NET 6.0
 

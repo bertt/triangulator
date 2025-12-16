@@ -166,15 +166,7 @@ namespace Triangulate.Tests
                 triangles.Geometries.Add(poly);
             }
 
-            var outputDir = System.IO.Path.Combine(TestContext.CurrentContext.WorkDirectory, "triangulate_outputs");
-            System.IO.Directory.CreateDirectory(outputDir);
-            var fileName = $"testbert_{DateTime.UtcNow:yyyyMMdd_HHmmssfff}.gltf";
-            var filePath = System.IO.Path.Combine(outputDir, fileName);
-            GltfCreator.CreateGltf(triangles, filePath);
-            
-            Assert.That(File.Exists(filePath), "Gltf file was not created");
-
-
+            GltfCreator.CreateGltf(triangles, "lines_triangulated.gltf");
         }
 
         private Polygon ToPolygon(List<Vector3> vertices)

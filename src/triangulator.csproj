@@ -3,7 +3,7 @@
   <PropertyGroup>
   <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>12</LangVersion>
-      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>bertt.triangulator</PackageId>
     <Authors>Bert Temme</Authors>
     <Product>Triangulator</Product>
@@ -14,9 +14,9 @@
     <PackageTags>wkb triangulate earcut</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Bert Temme</Copyright>
-    <Version>1.6.0</Version>
-	<AssemblyVersion>1.6.0</AssemblyVersion>
-	<FileVersion>1.6.0</FileVersion>
+    <Version>1.7.0</Version>
+	<AssemblyVersion>1.7.0</AssemblyVersion>
+	<FileVersion>1.7.0</FileVersion>
 	<PackageReleaseNotes>Fix interior rings</PackageReleaseNotes>
     <RootNamespace>Triangulate</RootNamespace>
   </PropertyGroup>
