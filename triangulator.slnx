@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/doc/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/triangulator.csproj" />
+  <Project Path="tests/triangulator.tests.csproj" />
+</Solution>
